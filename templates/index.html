@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Workflow Designer</title>
+
+    <!-- css -->
+    <link rel="stylesheet" href="../static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/bower_components/ionicons/css/ionicons.min.css">
+    
+
+    <script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../static/bower_components/smooth-scroll/dist/js/smooth-scroll.min.js"></script>
+    <script src="../static/assets/js/main.js"> </script>
+
+</head>
+<body data-spy="scroll" data-target="#site-nav">
+    <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
+        <div class="container">
+
+            <div class="collapse navbar-collapse" id="navbar-items">
+                <ul class="nav navbar-nav navbar-right">
+
+                    <!-- navigation menu -->
+
+
+                </ul>
+            </div>
+
+        </div><!-- /.container -->
+    </nav>
+
+    <header id="site-header" class="site-header valign-center">
+        <div class="intro">
+            <h1>Workflow Designer</h1>
+            <a class="btn btn-white" data-scroll href="#login">Log In</a>
+        </div>
+    </header>
+
+
+    <section id="login" class="section registration">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="section-title">Login</h3>
+                </div>
+            </div>
+
+            <form action="/login" id="registration-form" method="post">
+                <div class="row">
+                    <div class="col-md-12" id="registration-msg" style="display:none;">
+                        <div class="alert"></div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="User-name" id="u_name" name="u_name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Password" id="pass" name="pass" required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-black " name="login-btn" id="login-btn">Login</button>
+                        </div>
+                             <br>
+
+                             <div class="form-group">
+                             <a class="btn btn-black" data-scroll href="#signup">Not a member?</a>
+                             </div>
+                          
+                        </div>
+                        <style>
+                                    .coltxt
+                                    {
+                                        color: #A52A2A
+                                    }
+                        </style>
+            </form>
+        </div>
+    </section>
+
+<section id="signup" class="section registration">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="section-title">Sign Up</h3>
+                </div>
+            </div>
+
+            <form action="/signup" id="signup-form" method="post">
+                <div class="row">
+                    <div class="col-md-12" id="registration-msg" style="display:none;">
+                        <div class="alert"></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Name" name="uname" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Password" id="sp_pass" name="sp_pass" required>
+                        </div>
+
+                        
+
+                        
+
+                       
+
+
+                        <div class="form-group">
+                            <select class="form-control" name="role" id="role" required>
+                                <option readonly>Role</option>
+                                <option>Admin</option>
+                                <option>User</option>
+                                
+                            </select>
+
+                           <br>
+
+                        <a href="#signup-form" class="btn btn-black" name="signup-btn" id="signup-btn"> Sign Up</a>
+                         <script type=text/javascript>
+                            var fla=0
+                            function validate() {
+                            
+                            }
+
+                                $('#signup-btn').bind('click', function() {
+                                    fla=0           //for every click on signup, checking should be done.
+                                  validate();
+                                  if(fla==0)
+                                    {
+                                        $.ajax({
+                                            url: '/signup',
+                                            data: $('form').serialize(),
+                                            type: 'POST',
+                                            success: function(response) {
+
+                                                $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
+                                            },
+                                            error: function(error) {
+                                                console.log(error);
+                                            }
+                                        });
+                                    }
+                            });
+                            </script>
+                        <br>
+                        <br>
+                        <div class="coltxt" id=myg name=myg>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+     
+
+
+</body>
+</html>
