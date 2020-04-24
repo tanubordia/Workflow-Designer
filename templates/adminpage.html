@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Workflow Designer</title>
+
+    <!-- css -->
+    <link rel="stylesheet" href="../static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/bower_components/ionicons/css/ionicons.min.css">
+
+
+    <script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../static/bower_components/smooth-scroll/dist/js/smooth-scroll.min.js"></script>
+    <script src="../static/assets/js/main.js"> </script>
+
+</head>
+<body data-spy="scroll" data-target="#site-nav">
+    <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
+        <div class="container">
+
+            <div class="collapse navbar-collapse" id="navbar-items">
+                <ul class="nav navbar-nav navbar-right">
+
+                    <!-- navigation menu -->
+
+
+                </ul>
+            </div>
+
+        </div><!-- /.container -->
+    </nav>
+
+    <header id="site-header" class="site-header valign-center">
+        <div class="intro">
+            <h1>Workflow Designer</h1>
+
+        </div>
+    </header>
+
+
+
+
+
+
+<section id="workflowdesign" class="workflow design">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="section-title">Workflow design</h3>
+                </div>
+            </div>
+
+            <form action="/design" id="wf-form" method="post">
+                <div class="row">
+                    <div class="col-md-12" id="registration-msg" style="display:none;">
+                        <div class="alert"></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Workflow Name" name="wfname" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Custom Notification" id="cust_notif" name="cust_notif" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="integer" class="form-control" placeholder="Number of stages" id="numberstages" name="numberofstages" required>
+                        </div>
+
+
+
+
+
+
+
+
+                           <br>
+
+                        <a href="#wf-form" class="btn btn-black" name="wf-btn" id="wf-btn">Proceed</a>
+                         <script type=text/javascript>
+                            var fla=0
+                            function validate() {
+
+                            }
+
+                                $('#signup-btn').bind('click', function() {
+                                    fla=0           //for every click on signup, checking should be done.
+                                  validate();
+                                  if(fla==0)
+                                    {
+                                        $.ajax({
+                                            url: '/signup',
+                                            data: $('form').serialize(),
+                                            type: 'POST',
+                                            success: function(response) {
+
+                                                $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
+                                            },
+                                            error: function(error) {
+                                                console.log(error);
+                                            }
+                                        });
+                                    }
+                            });
+                            </script>
+                        <br>
+                        <br>
+                        <div class="coltxt" id=myg name=myg>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+
+
+
+</body>
+</html>

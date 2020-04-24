@@ -10,7 +10,7 @@ app.secret_key = 'some_secret'
 
 @app.route('/')
 def index():
-	
+
 	return render_template('index.html')
 
 #connecting to DB before every request
@@ -30,18 +30,18 @@ def test():
 	if(request.method=='POST'):
 		name = request.form['uname']
 		passw = request.form['sp_pass']
-		
+
 		role = request.form['role']
-		
+
 
 		if(len(name)==0 or len(passw)==0 or role=='Role'):
 			return jsonify(result = 'Please fill up all the fields')
 		else:
-			g.db.execute("INSERT INTO UserMaster(username,password,role) VALUES (?,?,?);",(name,passw,role) )		
+			g.db.execute("INSERT INTO UserMaster(username,password,role) VALUES (?,?,?);",(name,passw,role) )
 			g.db.commit()
 			return jsonify(result='Signup successful! Now login with your new User-id.')
-				
-			
+
+
 #clicking on Login
 @app.route('/login',methods=['GET', 'POST'])
 def login():
@@ -49,16 +49,24 @@ def login():
 		name = request.form['u_name']
 		passw = request.form['pass']
 
-		li = g.db.execute("SELECT password from usermaster WHERE username = ?;",[name]).fetchall();
-		
 
-		if(len(li)==0):
-			flash("Invalid User-id")
+		findrole = "SELECT role from usermaster WHERE username=\""+ name +"\" and password=\""+passw+"\""
+		print(findrole)
+		role= g.db.execute(findrole).fetchall();
+
+
+
+		if(len(role)==0):
+			flash("Invalid User-id or Password")
 			return redirect(url_for('index'))
-			
+
 		else:
-			return name;
-			
+			if(role[0][0]=="Admin"):
+
+				return render_template('adminpage.html')
+			else:
+				return role
+
 
 if __name__ == '__main__':
   app.run(host= '0.0.0.0', port=5000, debug=True)
