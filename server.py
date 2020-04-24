@@ -51,8 +51,10 @@ def login():
 
 
 		findrole = "SELECT role from usermaster WHERE username=\""+ name +"\" and password=\""+passw+"\""
-		print(findrole)
+		findid = "SELECT id from usermaster WHERE username=\""+ name +"\" and password=\""+passw+"\""
+
 		role= g.db.execute(findrole).fetchall();
+		id= g.db.execute(findid).fetchall();
 
 
 
@@ -62,10 +64,34 @@ def login():
 
 		else:
 			if(role[0][0]=="Admin"):
+				u_id=int(id[0][0])
 
-				return render_template('adminpage.html')
+				return render_template('adminpage.html', u_id=u_id)
 			else:
 				return name
+
+
+@app.route('/design', methods=['GET', 'POST'])
+def design():
+	if(request.method=='POST'):
+		u_id=request.form['u_id']
+		wfname = request.form['wfname']
+		cust_notif = request.form['cust_notif']
+
+		number = request.form['numberofstages']
+
+
+		if(len(wfname)==0 or len(cust_notif)==0 or number==0):
+			return jsonify(result = 'Please fill up all the fields')
+		else:
+			g.db.execute("INSERT INTO Workflow(name,customNotification,numofstages,admin_id) VALUES (?,?,?,?);",(wfname,cust_notif,number,u_id) )
+
+			g.db.commit()
+			wfid = g.db.execute("SELECT last_insert_rowid();")
+			return render_template('designStages.html')
+
+
+
 
 
 if __name__ == '__main__':

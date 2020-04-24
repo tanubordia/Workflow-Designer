@@ -36,7 +36,7 @@
 
     <header id="site-header" class="site-header valign-center">
         <div class="intro">
-            <h1>Workflow Designer</h1>
+            <h1>Stage Designer</h1>
 
         </div>
     </header>
@@ -46,35 +46,46 @@
 
 
 
-<section id="workflowdesign" class="workflow design">
+<section id="stagedesign" class="stage design">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="section-title">Workflow design</h3>
+                    <h3 class="section-title">Stage design</h3>
                 </div>
             </div>
 
-            <form action="/design" id="wf-form" method="post">
-                <div class="row">
-                    <div class="col-md-12" id="registration-msg" style="display:none;">
-                        <div class="alert"></div>
-                    </div>
+            <form action="/stagedesign" id="wf-form" method="post">
+
                     <div class="col-sm-6">
                         <div class="form-group">
-                          <p>Your ID:</p>
-                     <input type="text" class="form-control" id="u_id" name="u_id" value={{u_id}} readonly>
+                          <p>Workflow ID:</p>
+                     <input type="text" class="form-control" id="wf_id" name="Workflow ID" value={{wfid}} readonly>
                    </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Workflow Name" name="wfname" required>
+                            <input type="text" class="form-control" name="wfname" value={{wfname}} readonly>
                         </div>
+                        <script type='text/javascript'>
+       function addFields(){
+           // Number of inputs to create
 
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Custom Notification" id="cust_notif" name="cust_notif" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="integer" class="form-control" placeholder="Number of stages" id="numberstages" name="numberofstages" required>
-                        </div>
+           // Container <div> where dynamic content will be placed
+           var container = document.getElementById("container");
+           // Clear previous contents of the container
+
+           for (i=0;i<4;i++){
+               // Append a node with a random text
+               container.appendChild(document.createTextNode("Stage " + (i+1)));
+               // Create an <input> element, set its type and name attributes
+               var input = document.createElement("input");
+               input.type = "text";
+               input.name = "stage" + i;
+               container.appendChild(input);
+               // Append a line break
+               container.appendChild(document.createElement("br"));
+           }
+       }
+   </script>
 
 
 
@@ -92,13 +103,13 @@
 
                             }
 
-                                $('#wf-btn').bind('click', function() {
-                                    fla=0         //for every click on signup, checking should be done.
+                                $('#signup-btn').bind('click', function() {
+                                    fla=0           //for every click on signup, checking should be done.
                                   validate();
                                   if(fla==0)
                                     {
                                         $.ajax({
-                                            url: '/design',
+                                            url: '/signup',
                                             data: $('form').serialize(),
                                             type: 'POST',
                                             success: function(response) {
@@ -119,10 +130,10 @@
                         </div>
                     </div>
                     </div>
-
+                    </div>
                 </div>
             </form>
-
+        </div>
     </section>
 
 

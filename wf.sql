@@ -8,13 +8,18 @@ CREATE TABLE `UserMaster` (
 CREATE TABLE `Workflow` (
   `id` integer PRIMARY KEY AUTOINCREMENT,
   `name` varchar(255),
-  `customNotification` varchar(255)
+  `customNotification` varchar(255),
+  'numofstages' integer,
+  'admin_id' integer,
+  FOREIGN KEY (`admin_id`) REFERENCES `UserMaster` (`id`)
+
 );
 
 CREATE TABLE `Stage` (
   `id` integer PRIMARY KEY AUTOINCREMENT,
   `workflow_id` integer,
   `name` varchar(255),
+
  FOREIGN KEY (`workflow_id`) REFERENCES `Workflow` (`id`)
 );
 
@@ -62,7 +67,3 @@ CREATE TABLE `Attachment` (
   `stage_instance_id` integer,
 FOREIGN KEY (`stage_instance_id`) REFERENCES `StageInstance` (`id`)
 );
-
-
-
-
