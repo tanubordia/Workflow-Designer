@@ -65,7 +65,7 @@ def login():
 
 				return render_template('adminpage.html')
 			else:
-				return role
+				return name
 
 
 if __name__ == '__main__':
