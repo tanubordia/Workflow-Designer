@@ -92,11 +92,37 @@ def design():
 			g.db.execute("INSERT INTO Workflow(name,customNotification,numofstages,admin_id) VALUES (?,?,?,?);",(wfname,cust_notif,number,u_id) )
 
 			g.db.commit()
-			wfid = g.db.execute("SELECT last_insert_rowid();")
-	
-				
-			return render_template('designStages.html', wfid=wfid)
+			wfid = g.db.execute("SELECT last_insert_rowid();").fetchall()
+			wfid = int(wfid[0][0])
+
+			return render_template('designStages.html', u_id=u_id, wf_id=wfid, wfname = wfname, stagenumber = int(1))
 	return ""
+
+@app.route('/stagedesign', methods=['GET', 'POST'])
+def stagedesign():
+	if(request.method=='POST'):
+		u_id=request.form['u_id']
+		wf_id=request.form['wf_id']
+		wfname = request.form['wfname']
+		stagenumber = request.form['stagenumber']
+		stagename = request.form['stagename']
+		actionname = request.form['actionname']
+		if(len(stagename) == 0 or len(wfname) == 0):
+			return jsonify(result = 'Please fill up all the fields')
+		else:
+			g.db.execute("INSERT INTO Stage(workflow_id, name) VALUES (?,?);",(wf_id, stagename) )
+			g.db.commit()
+			stageId = g.db.execute("SELECT last_insert_rowid();").fetchall()
+			stageId = int(stageId[0][0])
+			g.db.execute("INSERT INTO Action(stage_id, name) VALUES (?,?);", (stageId, actionname))
+			g.db.commit()
+			NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
+			NumStages = int(NumStages[0][0])
+			if int(stagenumber) < int(NumStages) :
+				return render_template('designStages.html', u_id=u_id, wf_id=wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1)
+			else :
+				return ""
+
 
 
 

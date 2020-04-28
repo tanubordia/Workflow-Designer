@@ -55,27 +55,38 @@
             </div>
 
             <form action="/stagedesign" id="wf-form" method="post">
-
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                          <p>Workflow ID:</p>
-                     <input type="text" class="form-control" id="wf_id" name="Workflow ID" value={{wfid}} readonly>
-                   </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="wfname" value={{wfname}} readonly>
-                        </div>
- 
-                        <br>
-                        <br>
-                        <div class="coltxt" id=myg name=myg>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                    </div>
-                </div>
-            </form>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <p>User ID:</p>
+                <input type="integer" class="form-control" id="u_id" name="u_id" value={{u_id}} readonly>
+              </div>
+              <div class="form-group">
+                <p>Workflow ID:</p>
+                <input type="integer" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} readonly>
+              </div>
+              <div class="form-group">
+                <p>Workflow Name:</p>
+                <input type="text" class="form-control" name="wfname" value={{wfname}} readonly>
+              </div>
+              <div class="form-group">
+                <p>Stage Number:</p>
+                <input type="integer" class="form-control" name="stagenumber" value={{stagenumber}} readonly>
+              </div>
+              <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Stage Name" id="stagename" name="stagename" required>
+              </div>
+              <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Action Name" id="actionname" name="actionname" required>
+              </div>
+              <div class="form-group">
+                  <button type="submit" class="btn btn-black " name="wf-btn" id="wf-btn">Proceed</button>
+              </div>
+              <br>
+              <br>
+              <div class="coltxt" id=myg name=myg>
+              </div>
+            </div>
+          </form>
         </div>
     </section>
 

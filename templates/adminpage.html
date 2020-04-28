@@ -62,7 +62,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                           <p>Your ID:</p>
-                     <input type="text" class="form-control" id="u_id" name="u_id" value={{u_id}} readonly>
+                     <input type="integer" class="form-control" id="u_id" name="u_id" value={{u_id}} readonly>
                    </div>
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -99,7 +99,7 @@
 
 
                                 $('#wf-btn').bind('click', function() {
-                                   
+
                                  $.getJSON('/design',
                 function(data) {
               //do nothing
