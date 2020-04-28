@@ -55,6 +55,7 @@ FOREIGN KEY (`workflow_id`) REFERENCES `Workflow` (`id`)
 
 CREATE TABLE `StageInstance` (
   `id` integer PRIMARY KEY AUTOINCREMENT,
+	'stage_actor' integer,
   `workflow_instance_id` integer,
   `current_stage_id` integer,
 FOREIGN KEY (`workflow_instance_id`) REFERENCES `WorkflowInstance` (`id`),
