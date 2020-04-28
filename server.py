@@ -65,8 +65,13 @@ def login():
 		else:
 			if(role[0][0]=="Admin"):
 				u_id=int(id[0][0])
+				findwf="Select * from workflow where admin_id="+str(u_id)
+				wfs=g.db.execute(findwf).fetchall();
+				data= []
+				for wf in wfs:
+					data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " +wf[1].encode("utf-8"))
 
-				return render_template('adminpage.html', u_id=u_id)
+				return render_template('adminpage.html', u_id=u_id,data=data)
 			else:
 				return name
 
@@ -88,7 +93,10 @@ def design():
 
 			g.db.commit()
 			wfid = g.db.execute("SELECT last_insert_rowid();")
-			return render_template('designStages.html')
+	
+				
+			return render_template('designStages.html', wfid=wfid)
+	return ""
 
 
 

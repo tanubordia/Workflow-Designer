@@ -85,31 +85,25 @@
 
                            <br>
 
-                        <a href="#wf-form" class="btn btn-black" name="wf-btn" id="wf-btn">Proceed</a>
-                         <script type=text/javascript>
-                            var fla=0
-                            function validate() {
 
-                            }
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-black " name="wf-btn" id="wf-btn">Proceed</button>
+                        </div>
+<p> Existing Workflows <p>
+ {% for p in data %}
+      <p>{{ p }} </p>
+  {% endfor %}
+
+                         <script type=text/javascript>
+
+
 
                                 $('#wf-btn').bind('click', function() {
-                                    fla=0         //for every click on signup, checking should be done.
-                                  validate();
-                                  if(fla==0)
-                                    {
-                                        $.ajax({
-                                            url: '/design',
-                                            data: $('form').serialize(),
-                                            type: 'POST',
-                                            success: function(response) {
-
-                                                $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
-                                            },
-                                            error: function(error) {
-                                                console.log(error);
-                                            }
-                                        });
-                                    }
+                                   
+                                 $.getJSON('/design',
+                function(data) {
+              //do nothing
+            });
                             });
                             </script>
                         <br>
