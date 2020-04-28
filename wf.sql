@@ -59,6 +59,7 @@ CREATE TABLE `StageInstance` (
   `current_stage_id` integer,
 FOREIGN KEY (`workflow_instance_id`) REFERENCES `WorkflowInstance` (`id`),
 FOREIGN KEY (`current_stage_id`) REFERENCES `Stage` (`id`)
+FOREIGN KEY (`stage_actor`) REFERENCES `StageActor` (`user_id`)
 );
 
 CREATE TABLE `Attachment` (
