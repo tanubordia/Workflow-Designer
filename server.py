@@ -109,24 +109,51 @@ def stagedesign():
 		wfname = request.form['wfname']
 		stagenumber = request.form['stagenumber']
 		stagename = request.form['stagename']
-		actionname = request.form['actionname']
+		numActions = request.form['numActions']
 		if(len(stagename) == 0 or len(wfname) == 0):
 			return jsonify(result = 'Please fill up all the fields')
 		else:
-			g.db.execute("INSERT INTO Stage(workflow_id, name) VALUES (?,?);",(wf_id, stagename) )
+			g.db.execute("INSERT INTO Stage(workflow_id, name, numberofactions) VALUES (?,?,?);",(wf_id, stagename, numActions) )
 			g.db.commit()
-			stageId = g.db.execute("SELECT last_insert_rowid();").fetchall()
-			stageId = int(stageId[0][0])
-			g.db.execute("INSERT INTO Action(stage_id, name) VALUES (?,?);", (stageId, actionname))
-			g.db.commit()
+			stage_id = g.db.execute("SELECT last_insert_rowid();").fetchall()
+			stage_id = int(stage_id[0][0])
 			NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
 			NumStages = int(NumStages[0][0])
-			if int(stagenumber) < int(NumStages) :
-				return render_template('designStages.html', u_id=u_id, wf_id=wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1)
+			actionNumber = 0
+			if int(actionNumber) < int(numActions):
+				return render_template('designActions.html', u_id=u_id, wf_id=wf_id, wfname = wfname, stage_id = stage_id, stagename = stagename, stagenumber = int(stagenumber), actionNumber = int(actionNumber + 1))
+			elif int(stagenumber) < int(NumStages) :
+				return render_template('designStages.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1)
 			else :
 				return ""
 
-
+@app.route('/actiondesign', methods=['GET', 'POST'])
+def actiondesign():
+	u_id=request.form['u_id']
+	wf_id=request.form['wf_id']
+	wfname = request.form['wfname']
+	stage_id = request.form['stage_id']
+	stagenumber = request.form['stagenumber']
+	stagename = request.form['stagename']
+	actionNumber = request.form['actionNumber']
+	actionName = request.form['actionName']
+	if(len(actionName) == 0):
+		return jsonify(result = 'Please fill up all the fields')
+	else:
+		stage_id = int(stage_id)
+		g.db.execute("INSERT INTO Action(stage_id, name) VALUES (?,?);", (stage_id, actionName))
+		g.db.commit()
+		numActions = g.db.execute("SELECT numberofactions FROM Stage WHERE id = ?", (stage_id, )).fetchall()
+		numActions = int(numActions[0][0])
+		if int(actionNumber) < int(numActions):
+			return render_template('designActions.html', u_id=u_id, wf_id=wf_id, wfname = wfname, stage_id = stage_id, stagenumber = int(stagenumber), actionNumber = int(actionNumber) + 1)
+		else :
+			NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
+			NumStages = int(NumStages[0][0])
+			if int(stagenumber) < int(NumStages) :
+				return render_template('designStages.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1)
+			else:
+				return ""
 
 
 
@@ -157,7 +184,7 @@ def viewworkflow():
 
 @app.route('/instancewf', methods=['GET', 'POST'])
 def instancewf():
-	 if request.method == 'POST':
+	if request.method == 'POST':
 		print("wassup")
 		wf_id=request.form['wf_id']
 		print(wf_id)
@@ -168,7 +195,7 @@ def instancewf():
 		g.db.commit()
 
 		return "hi"
-	 return ""
+	return ""
 
 
 

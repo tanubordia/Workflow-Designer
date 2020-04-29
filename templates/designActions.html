@@ -46,37 +46,43 @@
 
 
 
-<section id="stagedesign" class="stage design">
+<section id="actiondesign" class="action design">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="section-title">Stage design</h3>
+                    <h3 class="section-title">Action design</h3>
                 </div>
             </div>
 
-            <form action="/stagedesign" id="wf-form" method="post">
+            <form action="/actiondesign" id="wf-form" method="post">
             <div class="col-sm-6">
               <div class="form-group">
                 <p>User ID:</p>
                 <input type="integer" class="form-control" id="u_id" name="u_id" value={{u_id}} readonly>
               </div>
               <div class="form-group">
-                <p>Workflow ID:</p>
-                <input type="integer" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} readonly>
+                <input type="hidden" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} readonly>
+              </div>
+              <div class="form-group">
+                <input type="hidden" class="form-control" id="stage_id" name="stage_id" value={{stage_id}} readonly>
               </div>
               <div class="form-group">
                 <p>Workflow Name:</p>
                 <input type="text" class="form-control" name="wfname" value={{wfname}} readonly>
               </div>
               <div class="form-group">
-                <p>Stage Number:</p>
-                <input type="integer" class="form-control" name="stagenumber" value={{stagenumber}} readonly>
+                <input type="hidden" class="form-control" name="stagenumber" value={{stagenumber}} readonly>
               </div>
               <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Stage Name" id="stagename" name="stagename" required>
+                <p>Stage Name: </p>
+                  <input type="text" class="form-control" name="stagename" value = {{stagename}} readonly>
               </div>
               <div class="form-group">
-                  <input type="integer" class="form-control" placeholder="Number of Actions" id="numActions" name="numActions" required>
+                <p>Action Number: </p>
+                  <input type="integer" class="form-control" name="actionNumber" value = {{actionNumber}} readonly>
+              </div>
+              <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Action Name" id="actionName" name="actionName" required>
               </div>
               <div class="form-group">
                   <button type="submit" class="btn btn-black " name="wf-btn" id="wf-btn">Proceed</button>
@@ -89,9 +95,5 @@
           </form>
         </div>
     </section>
-
-
-
-
 </body>
 </html>
