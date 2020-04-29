@@ -73,9 +73,12 @@ def login():
 
 				return render_template('adminpage.html', u_id=u_id,data=data)
 			else:
-				return name
+				findwf="Select * from workflow"
+				wfs=g.db.execute(findwf).fetchall();
+				print(1)
+				return render_template('userdashboard.html',u_id=id[0][0], data=wfs)
 
-
+#clicking on design
 @app.route('/design', methods=['GET', 'POST'])
 def design():
 	if(request.method=='POST'):
@@ -124,6 +127,48 @@ def stagedesign():
 				return ""
 
 
+
+
+
+#clicking on
+@app.route('/viewworkflow', methods=['GET', 'POST'])
+def viewworkflow():
+
+	print(1);
+	wf_id=request.form['wf_id']
+	print(wf_id)
+	wfid="Select * from workflow where id="+str(wf_id)
+	l=g.db.execute(wfid).fetchall();
+	print(l)
+	stages="Select id,name from stage where workflow_id="+str(wf_id)
+	stagelist=g.db.execute(stages).fetchall();
+	actionandstage=[]
+	for stage in stagelist:
+		print(stage)
+		actionstr="Select name from Action where stage_id="+str(stage[0])
+		actions=g.db.execute(actionstr).fetchall();
+		print(actions)
+
+
+		actionandstage.append([stage,actions])
+	print(actionandstage)
+	return render_template('viewworkflow.html',workflow=l[0],data=actionandstage,wf_id=wf_id)
+
+
+@app.route('/instancewf', methods=['GET', 'POST'])
+def instancewf():
+	 if request.method == 'POST':
+		print("wassup")
+		wf_id=request.form['wf_id']
+		print(wf_id)
+
+
+		sql="""INSERT INTO WorkflowInstance(workflow_id) VALUES ({});""".format(wf_id)
+		g.db.execute(sql)
+		g.db.commit()
+
+		return "hi"
+	 return ""
 
 
 

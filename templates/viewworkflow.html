@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Workflow Designer</title>
+
+    <!-- css -->
+    <link rel="stylesheet" href="../static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/bower_components/ionicons/css/ionicons.min.css">
+
+
+    <script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../static/bower_components/smooth-scroll/dist/js/smooth-scroll.min.js"></script>
+    <script src="../static/assets/js/main.js"> </script>
+
+</head>
+<body data-spy="scroll" data-target="#site-nav">
+    <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
+        <div class="container">
+
+
+            <div class="collapse navbar-collapse" id="navbar-items">
+                <ul class="nav navbar-nav navbar-right">
+
+                    <!-- navigation menu -->
+
+
+                </ul>
+            </div>
+
+        </div><!-- /.container -->
+    </nav>
+
+    <header id="site-header" class="site-header valign-center">
+        <div class="intro">
+            <h1>{{workflow[1]}}</h1>
+
+        </div>
+
+    </header>
+
+
+    <body data-spy="scroll" data-target="#site-nav">
+        <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
+            <div class="container">
+
+                <div class="collapse navbar-collapse" id="navbar-items">
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <!-- navigation menu -->
+
+
+                    </ul>
+                </div>
+
+            </div><!-- /.container -->
+        </nav>
+
+        <header id="site-header" class="site-header valign-center">
+            <div class="intro">
+                <h1>Workflow Designer</h1>
+
+            </div>
+        </header>
+
+
+
+
+
+
+    <section id="viewworkflow" class="viewworkflow">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="section-title"></h3>
+                    </div>
+                </div>
+
+                <form action="/instancewf" id="iwf-form" method="post">
+                    <div class="row">
+                        <div class="col-md-12" id="registration-msg" style="display:none;">
+                            <div class="alert"></div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="form-group">
+
+                       <input type="hidden" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} >
+                       <script>console.log(wf_id)</script>
+                     </div>
+
+                              <div class="form-group">
+                                <p>Number of Stages:</p>
+                           <input type="integer" class="form-control" id="numberstages" value={{workflow[3]}} readonly>
+                         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+     {% for p in data %}
+     <tr>
+       <div class="form-group">
+         <p>Stage Name:</p>
+
+
+
+
+      <input type="text" class="form-control" id="stage_Name" name="stage_Name" value={{p[0][1]}} readonly>
+    </div>
+
+      <p>Stage Actions:</p>
+
+
+
+
+  <p>{{p[1][0][0]}}</p>
+
+
+
+
+
+
+
+
+
+      {% endfor %}
+      <button type="submit" class="btn btn-black " name="instancewf" id="instancewf">Use Workflow</button>
+      <script type=text/javascript>
+
+
+
+             $('#instancewf').bind('click', function() {
+               console.log("Hi")
+
+              $.getJSON('/instancewf',
+    function() {
+    //do nothing
+    });
+         });
+         </script>
+
+
+
+                            <br>
+                            <br>
+                            <div class="coltxt" id=myg name=myg>
+                            </div>
+                            </div>
+                        </div>
+
+
+
+                </form>
+    </div>
+        </section>
+
+
+
+
+    </body>
+    </html>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

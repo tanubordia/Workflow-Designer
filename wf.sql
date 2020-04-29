@@ -19,6 +19,7 @@ CREATE TABLE `Stage` (
   `id` integer PRIMARY KEY AUTOINCREMENT,
   `workflow_id` integer,
   `name` varchar(255),
+  'numberofactions' integer,
 
  FOREIGN KEY (`workflow_id`) REFERENCES `Workflow` (`id`)
 );
