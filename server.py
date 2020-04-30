@@ -178,6 +178,7 @@ def viewworkflow():
 
 
 		actionandstage.append([stage,actions])
+		print(actions)
 	print(actionandstage)
 	return render_template('viewworkflow.html',workflow=l[0],data=actionandstage,wf_id=wf_id)
 
@@ -185,7 +186,7 @@ def viewworkflow():
 @app.route('/instancewf', methods=['GET', 'POST'])
 def instancewf():
 	if request.method == 'POST':
-		print("wassup")
+		
 		wf_id=request.form['wf_id']
 		print(wf_id)
 
@@ -194,7 +195,7 @@ def instancewf():
 		g.db.execute(sql)
 		g.db.commit()
 
-		return "hi"
+		
 	return ""
 
 
