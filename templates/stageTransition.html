@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Workflow Designer</title>
+
+    <!-- css -->
+    <link rel="stylesheet" href="../static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/bower_components/ionicons/css/ionicons.min.css">
+
+
+    <script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../static/bower_components/smooth-scroll/dist/js/smooth-scroll.min.js"></script>
+    <script src="../static/assets/js/main.js"> </script>
+
+</head>
+<body data-spy="scroll" data-target="#site-nav">
+    <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
+        <div class="container">
+
+            <div class="collapse navbar-collapse" id="navbar-items">
+                <ul class="nav navbar-nav navbar-right">
+
+                    <!-- navigation menu -->
+
+
+                </ul>
+            </div>
+
+        </div><!-- /.container -->
+    </nav>
+
+    <header id="site-header" class="site-header valign-center">
+        <div class="intro">
+            <h1>Workflow Designer</h1>
+
+        </div>
+    </header>
+
+
+
+
+
+
+<section id="stageTransition" class="stageTransition">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="section-title"></h3>
+                </div>
+            </div>
+
+            <form action="/stageTransition" id="ud-form" method="post">
+                <div class="row">
+                    <div class="col-md-12" id="registration-msg" style="display:none;">
+                        <div class="alert"></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="u_id" name="u_id" value={{u_id}} readonly>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} readonly>
+                        </div>
+                        <div class="form-group">
+                            <p>Workflow Name: </p>
+                            <input type="text" class="form-control" id="wfname" name="wfname" value="{{wfname}}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="stage_id" name="stage_id" value={{stage_id}} readonly>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="stagenumber" name="stagenumber" value={{stagenumber}} readonly>
+                        </div>
+                        <div class="form-group">
+                            <p>Stage Name:</p>
+                            <input type="text" class="form-control" id="stagename" name="stagename" value="{{stagename}}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="action_id" name="action_id" value={{action_id}} readonly>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="actionNumber" name="actionNumber" value={{actionNumber}} readonly>
+                        </div>
+                        <div class="form-group">
+                            <p>Action Name:</p>
+                            <input type="text" class="form-control" id="actionName" name="actionName" value="{{actionName}}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Next Stage ID" id="transitionStateId" name="transitionStateId" required>
+                        </div>
+                        <button type="submit" class="btn btn-black " name="next" id="next">Next</button>
+                        <p> Stages <p>
+                        <table style="width:100%">
+                        <tr>
+                            <th>Stage ID</th>
+                            <th>Stage Name</th>
+                        </tr>
+                        {% for p in data %}
+                        <tr>
+                            <th> 
+                                <div class="form-group">
+                                    <input type="integer" class="form-control" id="stages_id" name="stages_id" value={{p[0]}} readonly>
+                                </div>
+                            </th>
+                            <th> 
+                                <div class="form-group">
+                                    <input type="integer" class="form-control" id="stages_Name" name="stages_Name" value={{p[2]}} readonly>
+                                </div>
+                            </th>
+                        </tr>
+                        {% endfor %}
+                        <br>
+                        <br>
+                        <div class="coltxt" id=myg name=myg>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+</section>
+
+
+
+
+</body>
+</html>

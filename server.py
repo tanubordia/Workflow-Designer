@@ -69,7 +69,7 @@ def login():
 				wfs=g.db.execute(findwf).fetchall();
 				data= []
 				for wf in wfs:
-					data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " +wf[1].encode("utf-8"))
+					data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " + str(wf[1]))
 
 				return render_template('adminpage.html', u_id=u_id,data=data)
 			else:
@@ -129,33 +129,95 @@ def stagedesign():
 
 @app.route('/actiondesign', methods=['GET', 'POST'])
 def actiondesign():
-	u_id=request.form['u_id']
-	wf_id=request.form['wf_id']
-	wfname = request.form['wfname']
-	stage_id = request.form['stage_id']
-	stagenumber = request.form['stagenumber']
-	stagename = request.form['stagename']
-	actionNumber = request.form['actionNumber']
-	actionName = request.form['actionName']
-	if(len(actionName) == 0):
-		return jsonify(result = 'Please fill up all the fields')
-	else:
-		stage_id = int(stage_id)
-		g.db.execute("INSERT INTO Action(stage_id, name) VALUES (?,?);", (stage_id, actionName))
+	if(request.method == 'POST'):
+		u_id=request.form['u_id']
+		wf_id=request.form['wf_id']
+		wfname = request.form['wfname']
+		stage_id = request.form['stage_id']
+		stagenumber = request.form['stagenumber']
+		stagename = request.form['stagename']
+		actionNumber = request.form['actionNumber']
+		actionName = request.form['actionName']
+		if(len(actionName) == 0):
+			return jsonify(result = 'Please fill up all the fields')
+		else:
+			stage_id = int(stage_id)
+			g.db.execute("INSERT INTO Action(stage_id, name) VALUES (?,?);", (stage_id, actionName))
+			g.db.commit()
+			numActions = g.db.execute("SELECT numberofactions FROM Stage WHERE id = ?", (stage_id, )).fetchall()
+			numActions = int(numActions[0][0])
+			if int(actionNumber) < int(numActions):
+				return render_template('designActions.html', u_id=u_id, wf_id=wf_id, wfname = wfname, stage_id = stage_id, stagename = stagename, stagenumber = int(stagenumber), actionNumber = int(actionNumber) + 1)
+			else :
+				NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
+				NumStages = int(NumStages[0][0])
+				if int(stagenumber) < int(NumStages) :
+					return render_template('designStages.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1)
+				else:
+					finalStageName = "End Workflow"
+					numActions = 0
+					wf_id = int(wf_id)
+					g.db.execute("INSERT INTO Stage(workflow_id, name, numberofactions) VALUES (?,?,?);",(wf_id, finalStageName, numActions))
+					g.db.commit()
+					actionNumber = 0
+					stagenumber = 0
+					stagenumber = int(stagenumber) + 1
+					stagesList = g.db.execute("SELECT * FROM Stage WHERE workflow_id = ? ORDER BY id", (wf_id, )).fetchall()
+					stage_id = int(stagesList[stagenumber - 1][0])
+					actionNumber = int(actionNumber) + 1
+					actionList = g.db.execute("SELECT * FROM Action WHERE stage_id = ? ORDER BY id", (stage_id, )).fetchall()
+					action_id = int(actionList[actionNumber - 1][0])
+					actionName = actionList[actionNumber - 1][2]
+					stagename = stagesList[stagenumber - 1][2]
+					print(actionName, stagename)
+					return render_template('stageTransition.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stage_id = stage_id, stagenumber = stagenumber, stagename = stagename, action_id = action_id, actionNumber = actionNumber, actionName = actionName, data = stagesList)
+
+
+@app.route('/stageTransition', methods=['GET', 'POST'])
+def stageTransition():
+	if(request.method == 'POST'):
+		u_id = request.form['u_id']
+		wf_id = request.form['wf_id']
+		wfname = request.form['wfname']
+		stage_id = request.form['stage_id']
+		stagenumber = request.form['stagenumber']
+		stagename = request.form['stagename']
+		action_id = request.form['action_id']
+		actionNumber = request.form['actionNumber']
+		actionName = request.form['actionName']
+		transitionStateId = request.form['transitionStateId']
+		transitionStateId = int(transitionStateId)
+		g.db.execute("INSERT INTO StageTransition(prev_stage, action, next_stage) VALUES (?, ?, ?)", (stage_id, action_id, transitionStateId)).fetchall()
 		g.db.commit()
 		numActions = g.db.execute("SELECT numberofactions FROM Stage WHERE id = ?", (stage_id, )).fetchall()
 		numActions = int(numActions[0][0])
-		if int(actionNumber) < int(numActions):
-			return render_template('designActions.html', u_id=u_id, wf_id=wf_id, wfname = wfname, stage_id = stage_id, stagename = stagename, stagenumber = int(stagenumber), actionNumber = int(actionNumber) + 1)
-		else :
-			NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
-			NumStages = int(NumStages[0][0])
-			if int(stagenumber) < int(NumStages) :
-				return render_template('designStages.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1)
-			else:
-				return ""
-
-
+		NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
+		NumStages = int(NumStages[0][0])
+		print(transitionStateId, numActions, NumStages, actionNumber, stagenumber)
+		if(int(numActions) == int(actionNumber)):
+			actionNumber = 0
+			stagenumber = int(stagenumber) + 1
+			stagesList = g.db.execute("SELECT * FROM Stage WHERE workflow_id = ? ORDER BY id", (wf_id, )).fetchall()
+			stage_id = int(stagesList[stagenumber - 1][0])
+			actionNumber = int(actionNumber) + 1
+			actionList = g.db.execute("SELECT * FROM Action WHERE stage_id = ? ORDER BY id", (stage_id, )).fetchall()
+			if(len(actionList) == 0):
+				findwf="Select * from workflow where admin_id="+str(u_id)
+				wfs=g.db.execute(findwf).fetchall();
+				data= []
+				for wf in wfs:
+					data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " + str(wf[1]))
+				return render_template('adminpage.html', u_id=u_id,data=data)
+			action_id = int(actionList[actionNumber - 1][0])
+			actionName = str(actionList[actionNumber - 1][2])
+			return render_template('stageTransition.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stage_id = stage_id, stagenumber = stagenumber, stagename = stagename, action_id = action_id, actionNumber = actionNumber, actionName = actionName, data = stagesList)
+		else:
+			stagesList = g.db.execute("SELECT * FROM Stage WHERE workflow_id = ? ORDER BY id", (wf_id, )).fetchall()
+			actionNumber = int(actionNumber) + 1
+			actionList = g.db.execute("SELECT * FROM Action WHERE stage_id = ? ORDER BY id", (stage_id, )).fetchall()
+			actionName = str(actionList[actionNumber - 1][2])
+			action_id = int(actionList[actionNumber - 1][0])
+			return render_template('stageTransition.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stage_id = stage_id, stagenumber = stagenumber, stagename = stagename, action_id = action_id, actionNumber = actionNumber, actionName = actionName, data = stagesList)
 
 #clicking on
 @app.route('/viewworkflow', methods=['GET', 'POST'])
