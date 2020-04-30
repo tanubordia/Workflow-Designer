@@ -257,9 +257,10 @@ def instancewf():
 		sql="""INSERT INTO WorkflowInstance(workflow_id) VALUES ({});""".format(wf_id)
 		g.db.execute(sql)
 		g.db.commit()
+		return render_template('instancewf.html')
 
 		
-	return ""
+	return render_template('instancewf.html')
 
 
 
