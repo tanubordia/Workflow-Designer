@@ -210,6 +210,7 @@ def stageTransition():
 				return render_template('adminpage.html', u_id=u_id,data=data)
 			action_id = int(actionList[actionNumber - 1][0])
 			actionName = str(actionList[actionNumber - 1][2])
+			stagename = str(stagesList[stagenumber - 1][2])
 			return render_template('stageTransition.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stage_id = stage_id, stagenumber = stagenumber, stagename = stagename, action_id = action_id, actionNumber = actionNumber, actionName = actionName, data = stagesList)
 		else:
 			stagesList = g.db.execute("SELECT * FROM Stage WHERE workflow_id = ? ORDER BY id", (wf_id, )).fetchall()
