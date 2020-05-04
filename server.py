@@ -249,19 +249,34 @@ def viewworkflow():
 @app.route('/instancewf', methods=['GET', 'POST'])
 def instancewf():
 	if request.method == 'POST':
-		
+
 		wf_id=request.form['wf_id']
 		print(wf_id)
+		snum = "select numofstages from Workflow where id="+str(wf_id)
+		stage_n = g.db.execute(snum).fetchall();
+		# sql="""INSERT INTO WorkflowInstance(workflow_id) VALUES ({});""".format(wf_id)
+		# g.db.execute(sql)
+		# g.db.commit()
+		stages="Select id,name from stage where workflow_id="+str(wf_id)
+		stagelist=g.db.execute(stages).fetchall();
+		users = "select id,role,username from usermaster"
+		user_info = g.db.execute(users).fetchall();
+		return render_template('instancewf.html', stage_num = stage_n[0][0]+1, stagelist = stagelist, users = user_info)
 
 
-		sql="""INSERT INTO WorkflowInstance(workflow_id) VALUES ({});""".format(wf_id)
-		g.db.execute(sql)
-		g.db.commit()
-		return render_template('instancewf.html')
+	return render_template('instancewf.html',stage_num = stage_n[0][0]+1, stagelist = stagelist, users = user_info)
 
-		
-	return render_template('instancewf.html')
+@app.route('/workflowstruct', methods=['GET', 'POST'])
+def workflowstruct():
+	if request.method == 'POST':
+		wf_id=request.form['wf_id']
+		print(wf_id)
+		stage_actor = request.form['stage_actor']
+		print(stage_actor)
 
+		return render_template('workflowstruct.html')
+
+	return render_template('workflowstruct.html')
 
 
 

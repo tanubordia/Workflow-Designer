@@ -37,8 +37,8 @@
 
     <header id="site-header" class="site-header valign-center">
         <div class="intro">
-            <h1>Design Instance</h1>
-
+            <h1>Workflow Instance</h1>
+            <br>
         </div>
 
     </header>
@@ -71,12 +71,73 @@
     <section id="instancewf" class="instancewf">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="section-title"></h3>
-                    </div>
+                  <div class="col-md-6">
+                <div class="form-group">
+                  <p>Number of Stages:</p>
+                  <input type="integer" class="form-control" id="numberstages" value={{stage_num}} readonly>
                 </div>
+                <br>
 
-              
+                <h5>Set stage actor for each stage</h5>
+                {% for p in stagelist %}
+
+                 <div class="form-group">
+
+               <input type="text" class="form-control" id="stage_Name" name="stage_Name" value="{{p[1]}}" readonly>
+             </div>
+             <div class="form-group">
+
+             <input type="text" class="form-control" id="stage_actor{{p[0]}}" name="stage_actor{{p[0]}}" placeholder="Enter stage actor">
+           </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-black" name="workflowstruct" id="workflowstruct">Set Actors</button>
+                <script type=text/javascript>
+        $(function() {
+          $('workflowstruct').bind('click', function() {
+            $.getJSON('/workflowstruct',
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        });
+</script>
+
+         </div>
+                    <div class="col-md-6">
+                      <p> Existing Users <p>
+                        <table style="width:100%">
+                        <tr>
+                          <th>User ID</th>
+                          <th>User Role</th>
+                          <th>UserName</th>
+
+                        </tr>
+                       {% for p in users %}
+                       <tr>
+                         <th> <div class="form-group">
+
+                        <input type="integer" class="form-control" id="user_id" name="user_id" value={{p[0]}} readonly>
+                      </div>
+                      </th>
+                         <th> <div class="form-group">
+
+                        <input type="text" class="form-control" id="user_role" name="user_role" value="{{p[1]}}" readonly>
+                      </div></th>
+                      <th> <div class="form-group">
+
+                     <input type="text" class="form-control" id="user_name" name="user_name" value="{{p[2]}}" readonly>
+                   </div></th>
+                 </tr>
+                 {% endfor %}
+               </table>
+
+                    </div>
+
+
+             </div>
+
 
 
                 </form>
