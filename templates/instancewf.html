@@ -70,6 +70,7 @@
 
     <section id="instancewf" class="instancewf">
             <div class="container">
+              <form action="/workflowstruct" id="instancewf-form" method="post">
                 <div class="row">
                   <div class="col-md-6">
                 <div class="form-group">
@@ -87,7 +88,7 @@
              </div>
              <div class="form-group">
 
-             <input type="text" class="form-control" id="stage_actor{{p[0]}}" name="stage_actor{{p[0]}}" placeholder="Enter stage actor">
+             <input type="integer" class="form-control" id="stage_actor{{p[0]}}" name="stage_actor{{p[0]}}" placeholder="Enter stage actor id">
            </div>
                 {% endfor %}
 

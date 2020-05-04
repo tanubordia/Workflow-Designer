@@ -254,29 +254,60 @@ def instancewf():
 		print(wf_id)
 		snum = "select numofstages from Workflow where id="+str(wf_id)
 		stage_n = g.db.execute(snum).fetchall();
-		# sql="""INSERT INTO WorkflowInstance(workflow_id) VALUES ({});""".format(wf_id)
-		# g.db.execute(sql)
-		# g.db.commit()
-		stages="Select id,name from stage where workflow_id="+str(wf_id)
+		sql="""INSERT INTO WorkflowInstance(workflow_id) VALUES ({});""".format(wf_id)
+		g.db.execute(sql)
+		g.db.commit()
+		stages="Select id,name from stage where name<>'End Workflow' and workflow_id="+str(wf_id)
 		stagelist=g.db.execute(stages).fetchall();
 		users = "select id,role,username from usermaster"
 		user_info = g.db.execute(users).fetchall();
-		return render_template('instancewf.html', stage_num = stage_n[0][0]+1, stagelist = stagelist, users = user_info)
+		return render_template('instancewf.html', stage_num = stage_n[0][0], stagelist = stagelist, users = user_info)
 
 
-	return render_template('instancewf.html',stage_num = stage_n[0][0]+1, stagelist = stagelist, users = user_info)
+	return render_template('instancewf.html',stage_num = stage_n[0][0], stagelist = stagelist, users = user_info)
 
 @app.route('/workflowstruct', methods=['GET', 'POST'])
 def workflowstruct():
 	if request.method == 'POST':
-		wf_id=request.form['wf_id']
-		print(wf_id)
-		stage_actor = request.form['stage_actor']
+
+		sql = "select * from workflowinstance ORDER BY id DESC LIMIT 1";
+		wf_id = g.db.execute(sql).fetchall();
+		wf = "select id, name, numofstages from workflow where id="+str(wf_id[0][1])
+		work_f = g.db.execute(wf).fetchall();
+		print(work_f)
+		snum = "select numofstages from Workflow where id="+str(wf_id[0][1])
+		stage_n = g.db.execute(snum).fetchall();
+		stage_actor={}
+		for i in range(1,stage_n[0][0]+1):
+			stage_actor[i] = request.form['stage_actor'+str(i)]
 		print(stage_actor)
+		stages="Select id,name from stage where name<>'End Workflow' and workflow_id="+str(wf_id[0][1])
+		stagelist=g.db.execute(stages).fetchall();
+		print(stagelist)
+		for i in range(1,stage_n[0][0]+1):
+			g.db.execute("INSERT INTO StageActorInstance(stage_id, user_id, workflow_instance_id) VALUES (?, ?, ?)", (stagelist[i-1][0], stage_actor[i], wf_id[0][0])).fetchall()
+			g.db.commit()
+			
+		data =[]
+		for i in range(1,stage_n[0][0]+1):
+			data1=[]
+			data1.append(stagelist[i-1][0])
+			data1.append(stagelist[i-1][1])
+			actions = "select numberofactions from stage where id="+str(stagelist[i-1][0])
+			num_actions = g.db.execute(actions).fetchall();
+			data1.append(num_actions[0][0])
+			data1.append(stage_actor[i])
+			name = "select username from usermaster where id="+str(stage_actor[i])
+			actor_name = g.db.execute(name).fetchall();
+			data1.append(actor_name[0][0])
+			data.append(data1)
 
-		return render_template('workflowstruct.html')
+		print(data)
 
-	return render_template('workflowstruct.html')
+
+		return render_template('workflowstruct.html', wf = work_f, data = data)
+
+	return render_template('workflowstruct.html',wf = work_f, data = data)
 
 
 

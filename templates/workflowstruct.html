@@ -68,12 +68,79 @@
 
 
 
-    <section id="instancewf" class="instancewf">
+    <section id="workflowstruct" class="workflowstruct">
             <div class="container">
                 <div class="row">
                   <div class="col-md-6">
+                    <table style="width:100%">
+                    <tr>
+                      <th>Workflow ID</th>
+                      <th>Workflow Name</th>
+                      <th> Number of Stages</th>
 
+                    </tr>
+                    <tr>
+                      <th> <div class="form-group">
+
+                     <input type="integer" class="form-control" id="wfs_id" name="wfs_id" value={{wf[0][0]}} readonly>
+                   </div>
+                   </th>
+                   <th> <div class="form-group">
+
+                  <input type="text" class="form-control" id="wfs_name" name="wfs_name" value={{wf[0][1]}} readonly>
+                </div>
+                </th>
+                <th> <div class="form-group">
+
+               <input type="integer" class="form-control" id="stage_num" name="stage_num" value={{wf[0][2]}} readonly>
+             </div>
+             </th>
+           </tr>
+         </table>
+         <br>
+         <table style="width:100%">
+         <tr>
+           <th>Stage ID</th>
+           <th>Stage Name</th>
+           <th> Number of Actions</th>
+           <th>Actor ID</th>
+           <th>Actor Name</th>
+
+         </tr>
+         {% for p in data %}
+         <tr>
+           <th> <div class="form-group">
+
+          <input type="integer" class="form-control" id="stage_id" name="stage_id" value={{p[0]}} readonly>
+          </div>
+          </th>
+          <th> <div class="form-group">
+
+         <input type="integer" class="form-control" id="stage_name" name="stage_name" value={{p[1]}} readonly>
          </div>
+         </th>
+         <th> <div class="form-group">
+
+        <input type="integer" class="form-control" id="actions_num" name="actions_num" value={{p[2]}} readonly>
+        </div>
+        </th>
+        <th> <div class="form-group">
+
+       <input type="integer" class="form-control" id="actor_id" name="actor_id" value={{p[3]}} readonly>
+       </div>
+       </th>
+       <th> <div class="form-group">
+
+      <input type="integer" class="form-control" id="actor_name" name="actor_name" value={{p[4]}} readonly>
+    </div>
+    </th>
+
+
+        </tr>
+          {% endfor %}
+        </table>
+
+                  </div>
                     <div class="col-md-6">
                         <h3 class="section-title"></h3>
                     </div>
