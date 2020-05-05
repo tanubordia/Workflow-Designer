@@ -37,8 +37,8 @@ def test():
 		if(len(name)==0 or len(passw)==0 or role=='Role'):
 			return jsonify(result = 'Please fill up all the fields')
 		else:
-			g.db.execute("INSERT INTO UserMaster(username,password,role) VALUES (?,?,?);",(name,passw,role) )
-			g.db.commit()
+			# g.db.execute("INSERT INTO UserMaster(username,password,role) VALUES (?,?,?);",(name,passw,role) )
+			# g.db.commit()
 			return jsonify(result='Signup successful! Now login with your new User-id.')
 
 
@@ -75,8 +75,10 @@ def login():
 			else:
 				findwf="Select * from workflow"
 				wfs=g.db.execute(findwf).fetchall();
+				name = "select username from usermaster where id="+str(id[0][0])
+				username=g.db.execute(name).fetchall();
 				print(1)
-				return render_template('userdashboard.html',u_id=id[0][0], data=wfs)
+				return render_template('userdashboard.html',u_id=id[0][0],role= role[0][0], data=wfs,name = username[0][0])
 
 #clicking on design
 @app.route('/design', methods=['GET', 'POST'])
@@ -92,9 +94,9 @@ def design():
 		if(len(wfname)==0 or len(cust_notif)==0 or number==0):
 			return jsonify(result = 'Please fill up all the fields')
 		else:
-			g.db.execute("INSERT INTO Workflow(name,customNotification,numofstages,admin_id) VALUES (?,?,?,?);",(wfname,cust_notif,number,u_id) )
-
-			g.db.commit()
+			# g.db.execute("INSERT INTO Workflow(name,customNotification,numofstages,admin_id) VALUES (?,?,?,?);",(wfname,cust_notif,number,u_id) )
+			#
+			# g.db.commit()
 			wfid = g.db.execute("SELECT last_insert_rowid();").fetchall()
 			wfid = int(wfid[0][0])
 
@@ -113,8 +115,8 @@ def stagedesign():
 		if(len(stagename) == 0 or len(wfname) == 0):
 			return jsonify(result = 'Please fill up all the fields')
 		else:
-			g.db.execute("INSERT INTO Stage(workflow_id, name, numberofactions) VALUES (?,?,?);",(wf_id, stagename, numActions) )
-			g.db.commit()
+			# g.db.execute("INSERT INTO Stage(workflow_id, name, numberofactions) VALUES (?,?,?);",(wf_id, stagename, numActions) )
+			# g.db.commit()
 			stage_id = g.db.execute("SELECT last_insert_rowid();").fetchall()
 			stage_id = int(stage_id[0][0])
 			NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
@@ -142,8 +144,8 @@ def actiondesign():
 			return jsonify(result = 'Please fill up all the fields')
 		else:
 			stage_id = int(stage_id)
-			g.db.execute("INSERT INTO Action(stage_id, name) VALUES (?,?);", (stage_id, actionName))
-			g.db.commit()
+			# g.db.execute("INSERT INTO Action(stage_id, name) VALUES (?,?);", (stage_id, actionName))
+			# g.db.commit()
 			numActions = g.db.execute("SELECT numberofactions FROM Stage WHERE id = ?", (stage_id, )).fetchall()
 			numActions = int(numActions[0][0])
 			if int(actionNumber) < int(numActions):
@@ -157,8 +159,8 @@ def actiondesign():
 					finalStageName = "End Workflow"
 					numActions = 0
 					wf_id = int(wf_id)
-					g.db.execute("INSERT INTO Stage(workflow_id, name, numberofactions) VALUES (?,?,?);",(wf_id, finalStageName, numActions))
-					g.db.commit()
+					# g.db.execute("INSERT INTO Stage(workflow_id, name, numberofactions) VALUES (?,?,?);",(wf_id, finalStageName, numActions))
+					# g.db.commit()
 					actionNumber = 0
 					stagenumber = 0
 					stagenumber = int(stagenumber) + 1
@@ -187,8 +189,8 @@ def stageTransition():
 		actionName = request.form['actionName']
 		transitionStateId = request.form['transitionStateId']
 		transitionStateId = int(transitionStateId)
-		g.db.execute("INSERT INTO StageTransition(prev_stage, action, next_stage) VALUES (?, ?, ?)", (stage_id, action_id, transitionStateId)).fetchall()
-		g.db.commit()
+		# g.db.execute("INSERT INTO StageTransition(prev_stage, action, next_stage) VALUES (?, ?, ?)", (stage_id, action_id, transitionStateId)).fetchall()
+		# g.db.commit()
 		numActions = g.db.execute("SELECT numberofactions FROM Stage WHERE id = ?", (stage_id, )).fetchall()
 		numActions = int(numActions[0][0])
 		NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
@@ -254,12 +256,12 @@ def instancewf():
 		print(wf_id)
 		snum = "select numofstages from Workflow where id="+str(wf_id)
 		stage_n = g.db.execute(snum).fetchall();
-		sql="""INSERT INTO WorkflowInstance(workflow_id) VALUES ({});""".format(wf_id)
-		g.db.execute(sql)
-		g.db.commit()
+		# sql="""INSERT INTO WorkflowInstance(workflow_id) VALUES ({});""".format(wf_id)
+		# g.db.execute(sql)
+		# g.db.commit()
 		stages="Select id,name from stage where name<>'End Workflow' and workflow_id="+str(wf_id)
 		stagelist=g.db.execute(stages).fetchall();
-		users = "select id,role,username from usermaster"
+		users = "select id,role,username from usermaster where role='User'"
 		user_info = g.db.execute(users).fetchall();
 		return render_template('instancewf.html', stage_num = stage_n[0][0], stagelist = stagelist, users = user_info)
 
@@ -284,10 +286,10 @@ def workflowstruct():
 		stages="Select id,name from stage where name<>'End Workflow' and workflow_id="+str(wf_id[0][1])
 		stagelist=g.db.execute(stages).fetchall();
 		print(stagelist)
-		for i in range(1,stage_n[0][0]+1):
-			g.db.execute("INSERT INTO StageActorInstance(stage_id, user_id, workflow_instance_id) VALUES (?, ?, ?)", (stagelist[i-1][0], stage_actor[i], wf_id[0][0])).fetchall()
-			g.db.commit()
-			
+		# for i in range(1,stage_n[0][0]+1):
+		# 	g.db.execute("INSERT INTO StageActorInstance(stage_id, user_id, workflow_instance_id) VALUES (?, ?, ?)", (stagelist[i-1][0], stage_actor[i], wf_id[0][0])).fetchall()
+		# 	g.db.commit()
+
 		data =[]
 		for i in range(1,stage_n[0][0]+1):
 			data1=[]

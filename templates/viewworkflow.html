@@ -21,56 +21,35 @@
 <body data-spy="scroll" data-target="#site-nav">
     <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
         <div class="container">
-
-
             <div class="collapse navbar-collapse" id="navbar-items">
                 <ul class="nav navbar-nav navbar-right">
-
                     <!-- navigation menu -->
-
-
                 </ul>
             </div>
-
         </div><!-- /.container -->
-    </nav>
-
-    <header id="site-header" class="site-header valign-center">
-        <div class="intro">
-            <h1>{{workflow[1]}}</h1>
-
-        </div>
-
-    </header>
-
+    </nav
 
     <body data-spy="scroll" data-target="#site-nav">
         <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
             <div class="container">
-
                 <div class="collapse navbar-collapse" id="navbar-items">
                     <ul class="nav navbar-nav navbar-right">
-
-                        <!-- navigation menu -->
-
-
+                      <!-- navigation menu -->
                     </ul>
                 </div>
-
             </div><!-- /.container -->
         </nav>
 
         <header id="site-header" class="site-header valign-center">
-            <div class="intro">
+          <div class="intro" style="margin-top : 50px; color : white;">
+              <center>
                 <h1>Workflow Designer</h1>
-
-            </div>
+                <p style="font-size : 20px;">Design and create various workflows<p>
+              </center>
+          </div>
+          <br>
+          <center><u><h3>WorkFlow {{workflow[1]}} Info</h3></u></center>
         </header>
-
-
-
-
-
 
     <section id="viewworkflow" class="viewworkflow">
             <div class="container">
@@ -79,109 +58,70 @@
                         <h3 class="section-title"></h3>
                     </div>
                 </div>
-
+                <center>
                 <form action="/instancewf" id="iwf-form" method="post">
                     <div class="row">
                         <div class="col-md-12" id="registration-msg" style="display:none;">
                             <div class="alert"></div>
                         </div>
+                        <div class="col-sm-3"></div>
                         <div class="col-sm-6">
-                          <div class="form-group">
-
-                       <input type="hidden" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} >
-                       <script>console.log(wf_id)</script>
-                     </div>
-
+                            <div class="form-group">
+                              <input type="hidden" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} >
+                              <script>console.log(wf_id)</script>
+                            </div>
                               <div class="form-group">
-                                <p>Number of Stages:</p>
-                           <input type="integer" class="form-control" id="numberstages" value={{workflow[3]}} readonly>
-                         </div>
+                                <p style="font-size:20px;">Number of Stages: {{workflow[3]}}</p>
+                              </div>
 
+                              <table class="table table-light">
+                                <thead>
+                                  <tr style="color:white;">
+                                    <th scope="col">Stage name</th>
+                                    <th scope="col">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for p in data %}
+                                    <tr>
+                                      <td>{{p[0][1]}}</td>
+                                      <td>{{p[1]}}</td>
+                                    </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                              <br>
+                              <button type="submit" class="btn btn-black btn-primary" name="instancewf" id="instancewf">Use Workflow</button>
+                              <script type=text/javascript>
 
+                                     $('#instancewf').bind('click', function() {
+                                       console.log("Hi")
 
-
-
-
-
-
-
-
-
-
-
-     {% for p in data %}
-     <tr>
-       <div class="form-group">
-         <p>Stage Name:</p>
-
-
-
-
-      <input type="text" class="form-control" id="stage_Name" name="stage_Name" value="{{p[0][1]}}" readonly>
-    </div>
-
-    
-	
-
-
-
-
-  <p>{{p[1]}}</p>
-
-
-
-
-
-
-
-
-
-      {% endfor %}
-      <button type="submit" class="btn btn-black " name="instancewf" id="instancewf">Use Workflow</button>
-      <script type=text/javascript>
-
-
-
-             $('#instancewf').bind('click', function() {
-               console.log("Hi")
-
-              $.getJSON('/instancewf',
-    function() {
-    //do nothing
-    });
-         });
-         </script>
-
-
-
-                            <br>
-                            <br>
-                            <div class="coltxt" id=myg name=myg>
-                            </div>
-                            </div>
+                                      $.getJSON('/instancewf',
+                                  function() {
+                                  //do nothing
+                                  });
+                                 });
+                                 </script>
+                            <div class="coltxt" id=myg name=myg></div>
                         </div>
-
-
-
+                    </div>
                 </form>
-    </div>
+              </center>
+            </div>
         </section>
 
-
+        <style>
+            body{
+              height:770px;
+              background-image: linear-gradient(rgb(128, 170, 255),rgb(204, 179, 255));
+            }
+            .table td,th {
+              text-align: center;
+            }
+        </style>
 
 
     </body>
-    </html>
-
-
-
-
-
-
-
-
-
-
-
 </body>
 </html>
