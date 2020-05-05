@@ -72,7 +72,13 @@
             <div class="container">
               <form action="/workflowstruct" id="instancewf-form" method="post">
                 <div class="row">
+    <div class="form-group">
+
+                       <input type="hidden" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} >
+                       <script>console.log(wf_id)</script>
+                     </div>
                   <div class="col-md-6">
+
                 <div class="form-group">
                   <p>Number of Stages:</p>
                   <input type="integer" class="form-control" id="numberstages" value={{stage_num}} readonly>
