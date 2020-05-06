@@ -7,6 +7,8 @@ import sqlite3
 app = Flask(__name__)
 app.secret_key = 'some_secret'
 
+logged_user = dict()
+
 
 @app.route('/')
 def index():
@@ -59,6 +61,10 @@ def login():
 		name = "select username from usermaster where id="+str(id[0][0])
 		username=g.db.execute(name).fetchall();
 
+		logged_user['name'] = username[0][0]
+		logged_user['role'] = role[0][0]
+		logged_user['id'] = id[0][0]
+
 		if(len(role)==0):
 			flash("Invalid User-id or Password")
 			return redirect(url_for('index'))
@@ -74,11 +80,63 @@ def login():
 
 				return render_template('adminpage.html', u_id=u_id,data=wfs, role =role[0][0], name = username[0][0])
 			else:
-				findwf="Select * from workflow"
-				wfs=g.db.execute(findwf).fetchall();
+				return render_template('userlogin.html', u_id=id[0][0],role= role[0][0],name = username[0][0])
 
-				print(1)
-				return render_template('userdashboard.html',u_id=id[0][0],role= role[0][0], data=wfs,name = username[0][0])
+@app.route('/startworkflow', methods=['GET'])
+def startworkflow():
+	findwf="Select * from workflow"
+	wfs=g.db.execute(findwf).fetchall();
+	return render_template('userdashboard.html',u_id=logged_user['id'],role= logged_user['role'], data=wfs,name = logged_user['name'])
+
+@app.route('/viewtasks', methods=['GET', 'POST'])
+def viewtasks():
+	if(request.method == 'GET'):
+		query = "select workflow_instance_id, current_stage_id from StageInstance where stage_actor = " + str(logged_user['id'])
+		all_wfs = g.db.execute(query).fetchall()
+		data = []
+		for wf in all_wfs:
+			workflow_instance_id = wf[0]
+			stage_id = wf[1]
+			temp = dict()
+			query = "select name, id from Action where stage_id = " + str(stage_id)
+			all_actions = g.db.execute(query).fetchall()
+			query = "select workflow_id from WorkflowInstance where id = " + str(workflow_instance_id)
+			wf_id = g.db.execute(query).fetchall()[0][0]
+			query = "select name from Workflow where id = " + str(wf_id)
+			wf_name = g.db.execute(query).fetchall()[0][0]
+			temp[workflow_instance_id] = dict()
+			temp[workflow_instance_id]['name'] = wf_name
+			temp[workflow_instance_id]['actions'] = []
+			for action in all_actions:
+				temp[workflow_instance_id]['actions'].append((action[0], action[1]))
+			data.append(temp)
+		print(data)
+		return render_template('viewtasks.html', u_id=logged_user['id'],role= logged_user['role'], data=data,name = logged_user['name'])
+	else:
+		print("hiii")
+		workflow_instance_id = request.form['wf_instance_id']
+		action_id = request.form['action_id']
+		query = "select current_stage_id from StageInstance where workflow_instance_id = " + str(workflow_instance_id)
+		current_stage_id = g.db.execute(query).fetchall()[0][0]
+		query = "select next_stage from StageTransition where prev_stage = " + str(current_stage_id) + " and action = " + str(action_id)
+		next_stage_id = g.db.execute(query).fetchall()[0][0]
+		query = "select numberofactions from Stage where id = " + str(next_stage_id)
+		num_actions = g.db.execute(query).fetchall()[0][0]
+		print(num_actions)
+		if(num_actions > 0):
+			query = "select user_id from StageActorInstance where workflow_instance_id = " + str(workflow_instance_id) + " and stage_id = " + str(next_stage_id)
+			stage_actor = g.db.execute(query).fetchall()[0][0]
+			query = "update StageInstance set current_stage_id = " + str(next_stage_id) + " , stage_actor = " + str(stage_actor) + " where workflow_instance_id = " + str(workflow_instance_id)
+			g.db.execute(query).fetchall()
+			g.db.commit()
+		else:
+			query = "delete from WorkflowInstance where id = " + str(workflow_instance_id)
+			g.db.execute(query).fetchall()
+			g.db.commit()
+			query = "delete from StageInstance where workflow_instance_id = " + str(workflow_instance_id)
+			g.db.execute(query).fetchall()
+			g.db.commit()
+		return render_template('index.html')
 
 #clicking on design
 @app.route('/design', methods=['GET', 'POST'])
@@ -288,19 +346,28 @@ def workflowstruct():
 		wf_id = g.db.execute(sql).fetchall();
 		wf = "select id, name, numofstages from workflow where id="+str(wf_id[0][1])
 		work_f = g.db.execute(wf).fetchall();
-		print(work_f)
+		# print(work_f)
 		snum = "select numofstages from Workflow where id="+str(wf_id[0][1])
 		stage_n = g.db.execute(snum).fetchall();
 		stage_actor={}
 		for i in range(1,stage_n[0][0]+1):
 			stage_actor[i] = request.form['stage_actor'+str(i)]
-		print(stage_actor)
+		# print(stage_actor)
 		stages="Select id,name from stage where name<>'End Workflow' and workflow_id="+str(wf_id[0][1])
 		stagelist=g.db.execute(stages).fetchall();
-		print(stagelist)
+		# print(stagelist)
 		for i in range(1,stage_n[0][0]+1):
 			g.db.execute("INSERT INTO StageActorInstance(stage_id, user_id, workflow_instance_id) VALUES (?, ?, ?)", (stagelist[i-1][0], stage_actor[i], wf_id[0][0])).fetchall()
 			g.db.commit()
+
+		query = "select id from Stage where workflow_id = " + str(wf_id[0][1]) + " order by id limit 1"
+		start_stage_id = g.db.execute(query).fetchall()[0][0]
+
+		query = "select user_id from StageActorInstance where workflow_instance_id = " + str(wf_id[0][0]) + " and stage_id = " + str(start_stage_id)
+		start_stage_actor = g.db.execute(query).fetchall()[0][0]
+
+		g.db.execute("insert into StageInstance(workflow_instance_id, current_stage_id, stage_actor) values (?, ?, ?)", (wf_id[0][0], start_stage_id, start_stage_actor)).fetchall()
+		g.db.commit()
 
 		data =[]
 		for i in range(1,stage_n[0][0]+1):
