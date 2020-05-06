@@ -21,36 +21,28 @@
 <body data-spy="scroll" data-target="#site-nav">
     <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
         <div class="container">
-
             <div class="collapse navbar-collapse" id="navbar-items">
                 <ul class="nav navbar-nav navbar-right">
-
                     <!-- navigation menu -->
-
-
                 </ul>
             </div>
-
         </div><!-- /.container -->
     </nav>
 
     <header id="site-header" class="site-header valign-center">
-        <div class="intro">
+      <div class="intro" style="margin-top : 50px; color : white;">
+          <center>
             <h1>Workflow Designer</h1>
-
-        </div>
+            <p style="font-size : 20px;">Design and create various workflows<p>
+          </center>
+      </div>
     </header>
 
-
-
-
-
-
 <section id="workflowdesign" class="workflow design">
-        <div class="container">
+        <div class="container" style="margin-top:70px;">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="section-title">Workflow design</h3>
+                    <!-- <h3 class="section-title">Workflow design</h3> -->
                 </div>
             </div>
 
@@ -59,67 +51,95 @@
                     <div class="col-md-12" id="registration-msg" style="display:none;">
                         <div class="alert"></div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                          <p>Your ID:</p>
-                     <input type="integer" class="form-control" id="u_id" name="u_id" value={{u_id}} readonly>
-                   </div>
-                    <div class="col-sm-6">
+                    <div class="form-group">
+                      <input type="hidden" class="form-control" id="u_id" name="u_id" value={{u_id}} >
+                      <script>console.log(u_id)</script>
+                    </div>
+                    <div class="col-sm-3">
+                      <center><span class="glyphicon glyphicon-user" aria-hidden="true" style="font-size:150px;"></span>
+                        <div class="form-group" style="margin-top: 20px; color:white;">
+                            <p>User ID: {{u_id}}</p>
+                            <p>User role : {{role}}</p>
+                            <p>Username : {{name}}</p>
+                        </div>
+                      </center>
+                      </div>
+                      <div class="col-sm-1">
+                        <center><div style="border-left: 1px solid white; height: 500px;"></div></center>
+                      </div>
+                    <div class="col-sm-8">
+                      <p style="font-size: 30px;"> Existing Workflows: </p>
+                        <table class="table table-light">
+                          <thead>
+                            <tr style="color:white;">
+                              <th scope="col">Workflow ID</th>
+                              <th scope="col">Workflow Name</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for p in data %}
+                              <tr>
+                                <td>{{p[0]}}</td>
+                                <td>{{p[1]}}</td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                        <br>
+                        <p style="font-size: 30px;"> Design new workflow: <p>
+                        <div class="col-md-3">
+                          <h5>Workflow Name :</h5>
+                        </div>
+                        <div class="col-md-9">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Workflow Name" name="wfname" required>
                         </div>
-
+                        </div>
+                        <div class="col-md-3">
+                          <h5>Custom Notification :</h5>
+                        </div>
+                        <div class="col-md-9">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Custom Notification" id="cust_notif" name="cust_notif" required>
                         </div>
+                        </div>
+                        <div class="col-md-3">
+                          <h5>Number of Stages :</h5>
+                        </div>
+                        <div class="col-md-9">
                         <div class="form-group">
                             <input type="integer" class="form-control" placeholder="Number of stages" id="numberstages" name="numberofstages" required>
                         </div>
-
-
-
-
-
-
-
-
-                           <br>
-
-
+                      </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-black " name="wf-btn" id="wf-btn">Proceed</button>
+                            <button type="submit" class="btn btn-black btn-primary btn-lg btn-block" name="wf-btn" id="wf-btn">Proceed</button>
                         </div>
-<p> Existing Workflows <p>
- {% for p in data %}
-      <p>{{ p }} </p>
-  {% endfor %}
 
                          <script type=text/javascript>
-
-
-
                                 $('#wf-btn').bind('click', function() {
 
                                  $.getJSON('/design',
-                function(data) {
-              //do nothing
-            });
+                                function(data) {
+                              //do nothing
                             });
-                            </script>
-                        <br>
-                        <br>
-                        <div class="coltxt" id=myg name=myg>
-                        </div>
-                        </div>
+                            });
+                          </script>
+                        <div class="coltxt" id=myg name=myg></div>
                     </div>
-                    </div>
-
-                </div>
+                  </div>
             </form>
-
+          </div>
     </section>
 
-
+    <style>
+        body{
+          height:770px;
+          background-image: linear-gradient(rgb(128, 170, 255),rgb(204, 179, 255));
+        }
+        .table td,th {
+          text-align: center;
+        }
+    </style>
 
 
 </body>

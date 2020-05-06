@@ -56,7 +56,8 @@ def login():
 		role= g.db.execute(findrole).fetchall();
 		id= g.db.execute(findid).fetchall();
 
-
+		name = "select username from usermaster where id="+str(id[0][0])
+		username=g.db.execute(name).fetchall();
 
 		if(len(role)==0):
 			flash("Invalid User-id or Password")
@@ -67,16 +68,15 @@ def login():
 				u_id=int(id[0][0])
 				findwf="Select * from workflow where admin_id="+str(u_id)
 				wfs=g.db.execute(findwf).fetchall();
-				data= []
-				for wf in wfs:
-					data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " + str(wf[1]))
+				# data= []
+				# for wf in wfs:
+				# 	data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " + str(wf[1]))
 
-				return render_template('adminpage.html', u_id=u_id,data=data)
+				return render_template('adminpage.html', u_id=u_id,data=wfs, role =role[0][0], name = username[0][0])
 			else:
 				findwf="Select * from workflow"
 				wfs=g.db.execute(findwf).fetchall();
-				name = "select username from usermaster where id="+str(id[0][0])
-				username=g.db.execute(name).fetchall();
+
 				print(1)
 				return render_template('userdashboard.html',u_id=id[0][0],role= role[0][0], data=wfs,name = username[0][0])
 
@@ -100,7 +100,7 @@ def design():
 			wfid = g.db.execute("SELECT last_insert_rowid();").fetchall()
 			wfid = int(wfid[0][0])
 
-			return render_template('designStages.html', u_id=u_id, wf_id=wfid, wfname = wfname, stagenumber = int(1))
+			return render_template('designStages.html', u_id=u_id, wf_id=wfid, wfname = wfname, stagenumber = int(1), num_stage=number)
 	return ""
 
 @app.route('/stagedesign', methods=['GET', 'POST'])
@@ -120,12 +120,12 @@ def stagedesign():
 			stage_id = g.db.execute("SELECT last_insert_rowid();").fetchall()
 			stage_id = int(stage_id[0][0])
 			NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
-			NumStages = int(NumStages[0][0])
+			# NumStages = int(NumStages[0][0])
 			actionNumber = 0
 			if int(actionNumber) < int(numActions):
-				return render_template('designActions.html', u_id=u_id, wf_id=wf_id, wfname = wfname, stage_id = stage_id, stagename = stagename, stagenumber = int(stagenumber), actionNumber = int(actionNumber + 1))
+				return render_template('designActions.html', u_id=u_id, wf_id=wf_id, wfname = wfname, stage_id = stage_id, stagename = stagename, stagenumber = int(stagenumber), actionNumber = int(actionNumber + 1), num_stage=NumStages)
 			elif int(stagenumber) < int(NumStages) :
-				return render_template('designStages.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1)
+				return render_template('designStages.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1,num_stage=NumStages)
 			else :
 				return ""
 
@@ -206,10 +206,10 @@ def stageTransition():
 			if(len(actionList) == 0):
 				findwf="Select * from workflow where admin_id="+str(u_id)
 				wfs=g.db.execute(findwf).fetchall();
-				data= []
-				for wf in wfs:
-					data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " + str(wf[1]))
-				return render_template('adminpage.html', u_id=u_id,data=data)
+				# data= []
+				# for wf in wfs:
+				# 	data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " + str(wf[1]))
+				return render_template('adminpage.html', u_id=u_id,data=wfs)
 			action_id = int(actionList[actionNumber - 1][0])
 			actionName = str(actionList[actionNumber - 1][2])
 			stagename = str(stagesList[stagenumber - 1][2])

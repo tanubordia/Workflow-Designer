@@ -21,75 +21,126 @@
 <body data-spy="scroll" data-target="#site-nav">
     <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
         <div class="container">
-
             <div class="collapse navbar-collapse" id="navbar-items">
                 <ul class="nav navbar-nav navbar-right">
-
                     <!-- navigation menu -->
-
-
                 </ul>
             </div>
-
         </div><!-- /.container -->
     </nav>
 
     <header id="site-header" class="site-header valign-center">
-        <div class="intro">
-            <h1>Stage Designer</h1>
-
-        </div>
+      <div class="intro" style="margin-top : 50px; color : white;">
+          <center>
+            <h1>Workflow Designer</h1>
+            <p style="font-size : 20px;">Design and create various workflows<p>
+          </center>
+      </div>
     </header>
 
-
-
-
-
-
 <section id="stagedesign" class="stage design">
-        <div class="container">
+        <div class="container" style="margin-top:70px;">
             <div class="row">
-                <div class="col-md-12">
-                    <h3 class="section-title">Stage design</h3>
-                </div>
-            </div>
+                <form action="/stagedesign" id="wf-form" method="post">
+                    <div class="col-sm-4">
+                      <p style="font-size: 30px;"> Workflow Information: </p><br>
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <h5>User ID :</h5>
+                          </div>
+                          <div class="col-sm-8">
+                          <div class="form-group">
+                            <input type="integer" class="form-control" id="u_id" name="u_id" value={{u_id}} readonly>
+                          </div>
+                        </div>
+                      </div>
+                          <div class="row">
+                          <div class="col-sm-4">
+                            <h5>Workflow ID :</h5>
+                          </div>
+                          <div class="col-sm-8">
+                          <div class="form-group">
+                            <input type="integer" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} readonly>
+                          </div>
+                        </div>
+                      </div>
+                          <div class="row">
+                          <div class="col-sm-4">
+                            <h5>Workflow Name :</h5>
+                          </div>
+                          <div class="col-sm-8">
+                          <div class="form-group">
+                            <input type="text" class="form-control" name="wfname" value="{{wfname}}" readonly>
+                          </div>
+                        </div>
+                      </div>
+                          <div class="row">
+                          <div class="col-sm-4">
+                          <h5>Number of stages :</h5>
+                        </div>
+                        <div class="col-sm-8">
+                          <div class="form-group">
+                            <input type="text" class="form-control" name="num_stage" value="{{num_stage}}" readonly>
+                          </div>
+                        </div>
+                      </div>
 
-            <form action="/stagedesign" id="wf-form" method="post">
-            <div class="col-sm-6">
-              <div class="form-group">
-                <p>User ID:</p>
-                <input type="integer" class="form-control" id="u_id" name="u_id" value={{u_id}} readonly>
-              </div>
-              <div class="form-group">
-                <p>Workflow ID:</p>
-                <input type="integer" class="form-control" id="wf_id" name="wf_id" value={{wf_id}} readonly>
-              </div>
-              <div class="form-group">
-                <p>Workflow Name:</p>
-                <input type="text" class="form-control" name="wfname" value="{{wfname}}" readonly>
-              </div>
-              <div class="form-group">
-                <p>Stage Number:</p>
-                <input type="integer" class="form-control" name="stagenumber" value={{stagenumber}} readonly>
-              </div>
-              <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Stage Name" id="stagename" name="stagename" required>
-              </div>
-              <div class="form-group">
-                  <input type="integer" class="form-control" placeholder="Number of Actions" id="numActions" name="numActions" required>
-              </div>
-              <div class="form-group">
-                  <button type="submit" class="btn btn-black " name="wf-btn" id="wf-btn">Proceed</button>
-              </div>
-              <br>
-              <br>
-              <div class="coltxt" id=myg name=myg>
-              </div>
-            </div>
-          </form>
+
+                    </div>
+                    <div class="col-sm-1">
+                      <center><div style="border-left: 1px solid white; height: 500px;"></div></center>
+                    </div>
+                    <div class="col-sm-7">
+                      <p style="font-size: 30px;"> Stage Designing: </p></br>
+                      <div class="row">
+                        <div class="col-sm-4">
+                          <h5>Stage Number :</h5>
+                        </div>
+                        <div class="col-sm-8">
+                          <div class="form-group">
+                            <input type="integer" class="form-control" name="stagenumber" value={{stagenumber}} readonly>
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <h5> Stage Name :</h5>
+                        </div>
+                        <div class="col-sm-8">
+                          <div class="form-group">
+                              <input type="text" class="form-control" placeholder="Stage Name" id="stagename" name="stagename" required>
+                          </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <h5> Number of Actions :</h5>
+                        </div>
+                        <div class="col-sm-8">
+                          <div class="form-group">
+                              <input type="integer" class="form-control" placeholder="Number of Actions" id="numActions" name="numActions" required>
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="form-group">
+                          <button type="submit" class="btn btn-black btn-primary btn-lg btn-block" name="wf-btn" id="wf-btn">Proceed</button>
+                      </div>
+
+                      <br>
+                      <br>
+                      <div class="coltxt" id=myg name=myg>
+                      </div>
+                    </div>
+              </form>
+          </div>
         </div>
     </section>
-
+    <style>
+        body{
+          height:770px;
+          background-image: linear-gradient(rgb(128, 170, 255),rgb(204, 179, 255));
+        }
+        .table td,th {
+          text-align: center;
+        }
+    </style>
 
 
 
