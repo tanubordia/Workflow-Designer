@@ -154,7 +154,7 @@ def actiondesign():
 				NumStages = g.db.execute("SELECT numofstages FROM Workflow WHERE id = ?", (wf_id, )).fetchall()
 				NumStages = int(NumStages[0][0])
 				if int(stagenumber) < int(NumStages) :
-					return render_template('designStages.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1)
+					return render_template('designStages.html', u_id = u_id, wf_id = wf_id, wfname = wfname, stagenumber = int(stagenumber) + 1, num_stage=NumStages)
 				else:
 					finalStageName = "End Workflow"
 					numActions = 0
@@ -189,6 +189,8 @@ def stageTransition():
 		actionName = request.form['actionName']
 		transitionStateId = request.form['transitionStateId']
 		transitionStateId = int(transitionStateId)
+		sql1 = "select role,username from usermaster where id="+str(u_id)
+		rolename=g.db.execute(sql1).fetchall();
 		g.db.execute("INSERT INTO StageTransition(prev_stage, action, next_stage) VALUES (?, ?, ?)", (stage_id, action_id, transitionStateId)).fetchall()
 		g.db.commit()
 		numActions = g.db.execute("SELECT numberofactions FROM Stage WHERE id = ?", (stage_id, )).fetchall()
@@ -209,7 +211,7 @@ def stageTransition():
 				# data= []
 				# for wf in wfs:
 				# 	data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " + str(wf[1]))
-				return render_template('adminpage.html', u_id=u_id,data=wfs)
+				return render_template('adminpage.html', u_id=u_id,data=wfs, role = rolename[0][0], name = rolename[0][1])
 			action_id = int(actionList[actionNumber - 1][0])
 			actionName = str(actionList[actionNumber - 1][2])
 			stagename = str(stagesList[stagenumber - 1][2])
@@ -263,10 +265,20 @@ def instancewf():
 		stagelist=g.db.execute(stages).fetchall();
 		users = "select id,role,username from usermaster where role='User'"
 		user_info = g.db.execute(users).fetchall();
-		return render_template('instancewf.html', stage_num = stage_n[0][0], stagelist = stagelist, users = user_info)
+		stage_data = []
+		c=1
+		for i in stagelist:
+			data =[]
+			data.append(c);
+			data.append(i[0])
+			data.append(i[1])
+			stage_data.append(data)
+			c=c+1
+		print(stage_data)
+		return render_template('instancewf.html', stage_num = stage_n[0][0], stagelist = stage_data, users = user_info)
 
 
-	return render_template('instancewf.html',stage_num = stage_n[0][0], stagelist = stagelist, users = user_info)
+	return render_template('instancewf.html',stage_num = stage_n[0][0], stagelist = stage_data, users = user_info)
 
 @app.route('/workflowstruct', methods=['GET', 'POST'])
 def workflowstruct():
