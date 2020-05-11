@@ -74,6 +74,7 @@ def login():
 				u_id=int(id[0][0])
 				findwf="Select * from workflow where admin_id="+str(u_id)
 				wfs=g.db.execute(findwf).fetchall();
+				print(wfs)
 				# data= []
 				# for wf in wfs:
 				# 	data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " + str(wf[1]))

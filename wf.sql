@@ -67,10 +67,3 @@ FOREIGN KEY (`current_stage_id`) REFERENCES `Stage` (`id`)
 FOREIGN KEY (`stage_actor`) REFERENCES `StageActorInstance` (`user_id`)
 FOREIGN KEY (`action`) REFERENCES `Action` (`id`)
 );
-
-CREATE TABLE `Attachment` (
-  `id` integer PRIMARY KEY AUTOINCREMENT,
-  `text` varchar(255),
-  `stage_instance_id` integer,
-FOREIGN KEY (`stage_instance_id`) REFERENCES `StageInstance` (`id`)
-);
