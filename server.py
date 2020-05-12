@@ -9,6 +9,31 @@ app.secret_key = 'some_secret'
 
 logged_user = dict()
 
+def getPendingTasks():
+	query = "select workflow_instance_id, current_stage_id from StageInstance where stage_actor = " + str(logged_user['id'])
+	all_wfs = g.db.execute(query).fetchall()
+	data_list=[]
+	for wf in all_wfs:
+		data_list1=[]
+		workflow_instance_id = wf[0]
+		stage_id = wf[1]
+		data_list1.append(workflow_instance_id)
+		query = "select name, id from Action where stage_id = " + str(stage_id)
+		all_actions = g.db.execute(query).fetchall()
+		query = "select workflow_id from WorkflowInstance where id = " + str(workflow_instance_id)
+		wf_id = g.db.execute(query).fetchall()[0][0]
+		query = "select name from Workflow where id = " + str(wf_id)
+		wf_name = g.db.execute(query).fetchall()[0][0]
+		query = "select name from stage where id = " + str(stage_id)
+		stage_name = g.db.execute(query).fetchall()[0][0]
+		data_list1.append(stage_name)
+		data_list1.append(wf_name)
+		data_list1.append([])
+		for action in all_actions:
+			data_list1[-1].append((action[0], action[1]))
+		data_list.append(data_list1)
+	return data_list
+
 
 @app.route('/')
 def index():
@@ -73,12 +98,7 @@ def login():
 			if(role[0][0]=="Admin"):
 				u_id=int(id[0][0])
 				findwf="Select * from workflow where admin_id="+str(u_id)
-				wfs=g.db.execute(findwf).fetchall();
-				print(wfs)
-				# data= []
-				# for wf in wfs:
-				# 	data.append("WorkFlow ID: " + str(wf[0]) + " |  Workflow Name: " + str(wf[1]))
-
+				wfs=g.db.execute(findwf).fetchall()
 				return render_template('adminpage.html', u_id=u_id,data=wfs, role =role[0][0], name = username[0][0])
 			else:
 				return render_template('userlogin.html', u_id=id[0][0],role= role[0][0],name = username[0][0])
@@ -92,38 +112,9 @@ def startworkflow():
 @app.route('/viewtasks', methods=['GET', 'POST'])
 def viewtasks():
 	if(request.method == 'GET'):
-		query = "select workflow_instance_id, current_stage_id from StageInstance where stage_actor = " + str(logged_user['id'])
-		all_wfs = g.db.execute(query).fetchall()
-		data = []
-		data_list=[]
-		for wf in all_wfs:
-			data_list1=[]
-			workflow_instance_id = wf[0]
-			data_list1.append(workflow_instance_id)
-			stage_id = wf[1]
-			temp = dict()
-			query = "select name, id from Action where stage_id = " + str(stage_id)
-			all_actions = g.db.execute(query).fetchall()
-			query = "select workflow_id from WorkflowInstance where id = " + str(workflow_instance_id)
-			wf_id = g.db.execute(query).fetchall()[0][0]
-			query = "select name from Workflow where id = " + str(wf_id)
-			wf_name = g.db.execute(query).fetchall()[0][0]
-			query = "select name from stage where id = " + str(stage_id)
-			stage_name = g.db.execute(query).fetchall()
-			data_list1.append(stage_name[0][0])
-			temp[workflow_instance_id] = dict()
-			temp[workflow_instance_id]['name'] = wf_name
-			data_list1.append(wf_name)
-			temp[workflow_instance_id]['actions'] = []
-			for action in all_actions:
-				temp[workflow_instance_id]['actions'].append((action[0], action[1]))
-			data_list1.append(temp[workflow_instance_id]['actions'])
-			data.append(temp)
-			data_list.append(data_list1)
-		print(data_list)
+		data_list=getPendingTasks()
 		return render_template('viewtasks.html', u_id=logged_user['id'],role= logged_user['role'], data=data_list,name = logged_user['name'])
 	else:
-		print("hiii")
 		workflow_instance_id = request.form['wf_instance_id']
 		action_id = request.form['action_id']
 		query = "select current_stage_id from StageInstance where workflow_instance_id = " + str(workflow_instance_id)
@@ -132,7 +123,6 @@ def viewtasks():
 		next_stage_id = g.db.execute(query).fetchall()[0][0]
 		query = "select numberofactions from Stage where id = " + str(next_stage_id)
 		num_actions = g.db.execute(query).fetchall()[0][0]
-		print(num_actions)
 		if(num_actions > 0):
 			query = "select user_id from StageActorInstance where workflow_instance_id = " + str(workflow_instance_id) + " and stage_id = " + str(next_stage_id)
 			stage_actor = g.db.execute(query).fetchall()[0][0]
@@ -146,7 +136,8 @@ def viewtasks():
 			query = "delete from StageInstance where workflow_instance_id = " + str(workflow_instance_id)
 			g.db.execute(query).fetchall()
 			g.db.commit()
-		return render_template('index.html')
+		data_list=getPendingTasks()
+		return render_template('viewtasks.html', u_id=logged_user['id'],role= logged_user['role'], data=data_list,name = logged_user['name'])
 
 #clicking on design
 @app.route('/design', methods=['GET', 'POST'])
