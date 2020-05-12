@@ -95,8 +95,11 @@ def viewtasks():
 		query = "select workflow_instance_id, current_stage_id from StageInstance where stage_actor = " + str(logged_user['id'])
 		all_wfs = g.db.execute(query).fetchall()
 		data = []
+		data_list=[]
 		for wf in all_wfs:
+			data_list1=[]
 			workflow_instance_id = wf[0]
+			data_list1.append(workflow_instance_id)
 			stage_id = wf[1]
 			temp = dict()
 			query = "select name, id from Action where stage_id = " + str(stage_id)
@@ -105,14 +108,20 @@ def viewtasks():
 			wf_id = g.db.execute(query).fetchall()[0][0]
 			query = "select name from Workflow where id = " + str(wf_id)
 			wf_name = g.db.execute(query).fetchall()[0][0]
+			query = "select name from stage where id = " + str(stage_id)
+			stage_name = g.db.execute(query).fetchall()
+			data_list1.append(stage_name[0][0])
 			temp[workflow_instance_id] = dict()
 			temp[workflow_instance_id]['name'] = wf_name
+			data_list1.append(wf_name)
 			temp[workflow_instance_id]['actions'] = []
 			for action in all_actions:
 				temp[workflow_instance_id]['actions'].append((action[0], action[1]))
+			data_list1.append(temp[workflow_instance_id]['actions'])
 			data.append(temp)
-		print(data)
-		return render_template('viewtasks.html', u_id=logged_user['id'],role= logged_user['role'], data=data,name = logged_user['name'])
+			data_list.append(data_list1)
+		print(data_list)
+		return render_template('viewtasks.html', u_id=logged_user['id'],role= logged_user['role'], data=data_list,name = logged_user['name'])
 	else:
 		print("hiii")
 		workflow_instance_id = request.form['wf_instance_id']
