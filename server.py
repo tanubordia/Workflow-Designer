@@ -24,7 +24,6 @@ def getPendingTasks():
 		wf_name = g.db.execute(query).fetchall()[0][0]
 		query = "select name,numberofactions from stage where id = " + str(stage_id)
 		stage_name = g.db.execute(query).fetchall()
-		print(all_actions)
 		for action in all_actions:
 			data_list1=[]
 			data_list1.append(workflow_instance_id)
@@ -85,18 +84,16 @@ def login():
 		role= g.db.execute(findrole).fetchall();
 		id= g.db.execute(findid).fetchall();
 
-		name = "select username from usermaster where id="+str(id[0][0])
-		username=g.db.execute(name).fetchall();
-
-		logged_user['name'] = username[0][0]
-		logged_user['role'] = role[0][0]
-		logged_user['id'] = id[0][0]
-
 		if(len(role)==0):
 			flash("Invalid User-id or Password")
 			return redirect(url_for('index'))
 
 		else:
+			name = "select username from usermaster where id="+str(id[0][0])
+			username=g.db.execute(name).fetchall();
+			logged_user['name'] = username[0][0]
+			logged_user['role'] = role[0][0]
+			logged_user['id'] = id[0][0]
 			if(role[0][0]=="Admin"):
 				u_id=int(id[0][0])
 				findwf="Select * from workflow where admin_id="+str(u_id)
@@ -115,11 +112,11 @@ def startworkflow():
 def viewtasks():
 	if(request.method == 'GET'):
 		data_list=getPendingTasks()
-		print(data_list)
 		return render_template('viewtasks.html', u_id=logged_user['id'],role= logged_user['role'], data=data_list,name = logged_user['name'])
 	else:
-		workflow_instance_id = request.form['wf_instance_id']
-		action_id = request.form['action_id']
+		temp = request.form['doaction'].split(",")
+		workflow_instance_id = temp[0]
+		action_id = temp[1]
 		query = "select current_stage_id from StageInstance where workflow_instance_id = " + str(workflow_instance_id)
 		current_stage_id = g.db.execute(query).fetchall()[0][0]
 		query = "select next_stage from StageTransition where prev_stage = " + str(current_stage_id) + " and action = " + str(action_id)
