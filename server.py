@@ -292,19 +292,17 @@ def viewworkflow():
 	print(wf_id)
 	wfid="Select * from workflow where id="+str(wf_id)
 	l=g.db.execute(wfid).fetchall();
-	print(l)
 	stages="Select id,name from stage where workflow_id="+str(wf_id)
 	stagelist=g.db.execute(stages).fetchall();
 	actionandstage=[]
 	for stage in stagelist:
-		print(stage)
 		actionstr="Select name from Action where stage_id="+str(stage[0])
 		actions=g.db.execute(actionstr).fetchall();
 		print(actions)
-
-
-		actionandstage.append([stage,actions])
-		print(actions)
+		action_list=[]
+		for action in actions:
+			action_list.append(action[0].encode("utf-8"))
+		actionandstage.append([stage,action_list])
 	print(actionandstage)
 	return render_template('viewworkflow.html',workflow=l[0],data=actionandstage,wf_id=wf_id)
 
