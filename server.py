@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,g,flash,redirect,url_for,jsonify,json,session
+from flask import Flask, render_template, request,g , flash,redirect, url_for,jsonify, json, session
 from datetime import datetime,timedelta
 import sqlite3
 
@@ -14,24 +14,26 @@ def getPendingTasks():
 	all_wfs = g.db.execute(query).fetchall()
 	data_list=[]
 	for wf in all_wfs:
-		data_list1=[]
-		workflow_instance_id = wf[0]
 		stage_id = wf[1]
-		data_list1.append(workflow_instance_id)
+		workflow_instance_id = wf[0]
 		query = "select name, id from Action where stage_id = " + str(stage_id)
 		all_actions = g.db.execute(query).fetchall()
 		query = "select workflow_id from WorkflowInstance where id = " + str(workflow_instance_id)
 		wf_id = g.db.execute(query).fetchall()[0][0]
 		query = "select name from Workflow where id = " + str(wf_id)
 		wf_name = g.db.execute(query).fetchall()[0][0]
-		query = "select name from stage where id = " + str(stage_id)
-		stage_name = g.db.execute(query).fetchall()[0][0]
-		data_list1.append(stage_name)
-		data_list1.append(wf_name)
-		data_list1.append([])
+		query = "select name,numberofactions from stage where id = " + str(stage_id)
+		stage_name = g.db.execute(query).fetchall()
+		print(all_actions)
 		for action in all_actions:
-			data_list1[-1].append((action[0], action[1]))
-		data_list.append(data_list1)
+			data_list1=[]
+			data_list1.append(workflow_instance_id)
+			data_list1.append(stage_name[0][0])
+			# data_list1.append(stage_name[0][1])
+			data_list1.append(wf_name)
+			# data_list1.append([])
+			data_list1.append([action[0], action[1]])
+			data_list.append(data_list1)
 	return data_list
 
 
@@ -113,6 +115,7 @@ def startworkflow():
 def viewtasks():
 	if(request.method == 'GET'):
 		data_list=getPendingTasks()
+		print(data_list)
 		return render_template('viewtasks.html', u_id=logged_user['id'],role= logged_user['role'], data=data_list,name = logged_user['name'])
 	else:
 		workflow_instance_id = request.form['wf_instance_id']

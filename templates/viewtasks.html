@@ -63,7 +63,7 @@
                         <center><div style="border-left: 1px solid white; height: 500px;"></div></center>
                       </div>
                       <div class="col-sm-8">
-                        <p style="font-size: 30px;"> Active Workflows: <p>
+                        <p style="font-size: 30px;"> Pending Actions: <p>
                           <table class="table table-light">
                             <thead>
                               <tr style="color:white;">
@@ -79,20 +79,15 @@
                                   <td>{{p[0]}}</td>
                                   <td>{{p[2]}}</td>
                                   <td>{{p[1]}}</td>
-                                  <td>{{p[3]}}</td>
+                                  <td><button type="submit" class="btn btn-black btn-primary" name="doaction" id="doaction">{{p[3][0]}}</button></td>
+                                  <input type="hidden" class="form-control" id="wf_instance_id" name="wf_instance_id" value={{p[0]}} >
+                                  <input type="hidden" class="form-control" id="action_id" name="action_id" value={{p[3][1]}} >
+
                                 </tr>
                               {% endfor %}
                             </tbody>
                           </table>
                           <br>
-                          <p style="font-size: 30px;"> Perform Action: <p>
-                        <div class="form-group">
-                            <input type="integer" class="form-control" id="wf_instance_id" name="wf_instance_id" placeholder="Enter Workflow Instance ID">
-                        </div>
-                        <div class="form-group">
-                            <input type="integer" class="form-control" id="action_id" name="action_id" placeholder="Enter Action ID">
-                        </div>
-                        <button type="submit" class="btn btn-black btn-primary" name="doaction" id="doaction">Submit</button>
                     </div>
                     <script type=text/javascript>
                            $('#doaction').bind('click', function() {

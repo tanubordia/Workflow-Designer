@@ -31,15 +31,6 @@ CREATE TABLE `Action` (
 FOREIGN KEY (`stage_id`) REFERENCES `Stage` (`id`)
 );
 
-CREATE TABLE `StageActorInstance` (
-  `stage_id` integer,
-  `user_id` integer,
-  `workflow_instance_id` integer,
-FOREIGN KEY (`stage_id`) REFERENCES `Stage` (`id`),
-FOREIGN KEY (`user_id`) REFERENCES `UserMaster` (`id`)
-FOREIGN KEY (`workflow_instance_id`) REFERENCES `WorkflowInstance` (`id`),
-);
-
 CREATE TABLE `StageTransition` (
   `prev_stage` integer,
   `action` integer,
@@ -54,6 +45,15 @@ CREATE TABLE `WorkflowInstance` (
   `workflow_id` integer,
 FOREIGN KEY (`workflow_id`) REFERENCES `Workflow` (`id`)
 
+);
+
+CREATE TABLE `StageActorInstance` (
+  `stage_id` integer,
+  `user_id` integer,
+  `workflow_instance_id` integer,
+FOREIGN KEY (`stage_id`) REFERENCES `Stage` (`id`),
+FOREIGN KEY (`user_id`) REFERENCES `UserMaster` (`id`),
+FOREIGN KEY (`workflow_instance_id`) REFERENCES `WorkflowInstance` (`id`)
 );
 
 CREATE TABLE `StageInstance` (
